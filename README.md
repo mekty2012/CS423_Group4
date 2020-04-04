@@ -18,9 +18,16 @@ Some other methods for creating random matrix : <https://en.wikipedia.org/wiki/R
   - Create m-length vector. (This will be mean vector)
   - Create m* m matrix that is positive semi-definite, symmetric. This condition is proven in reference, and creating these matrix can be done by MM^T or other method using SVD. (This will be covariance matrix)
   - With these vector and matrix, create multivariate normal random variable.
-4. This query returns following. 
+4. This query returns following.
   - distribution of n
   - distribution of pi_i
   - distribution of each mean vector & covariance matrix.
-5. Give regularization to n. 
-6. For each data, 'observe' it. 
+5. Give regularization to n.
+6. For each data, 'observe' it.
+
+## Some rules
+Before you commit, erase all outputs of code segment. You can do it by alt+g -> alt+z.
+
+Do not commit unnecessary files like syntex from latex or clj~. If such file exists, add it to .gitignore.
+
+Be sure to add simple description what you have done when you commit.
