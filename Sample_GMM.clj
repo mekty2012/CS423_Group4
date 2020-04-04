@@ -45,11 +45,8 @@
 
 ;; @@
 (defn zero_matrix [m n]
-  (if (= m 1)
-    (list (zero_vector n))
-    (conj (zero_matrix (- m 1) n) (zero_vector n))
-    )
-  )
+  (repeat m (repeat n 0)
+  ))
 
 (zero_matrix 3 4)
 ;; @@
@@ -179,23 +176,18 @@
 ;; @@
 
 ;; @@
-(defn n_vector [n k]
-  (if (= n 1)
-  (list k)
-  (conj (n_vector (- n 1) k) k))
-  )
-
-(with-primitive-procedures [template/n_vector template/zero_vector template/zero_matrix template/mat_vec_mult]
+; This is wrong implementation, however works well. To 'learn' GMM, we need our dataset as input.
+(with-primitive-procedures [template/zero_matrix template/mat_vec_mult]
   (defquery gaussian-mixture-model [dim lambda mean_mean mean_std std_mean std_std]
     (let [n (sample (poisson lambda))
-          pi (sample (dirichlet (n_vector n 1)))
-          mean_vectors (map (fn [kkk] (map (fn [kkkk] (sample (normal mean_mean mean_std))) (zero_vector dim))) (zero_vector n))
+          pi (sample (dirichlet (repeat n 1)))
+          mean_vectors (map (fn [kkk] (map (fn [kkkk] (sample (normal mean_mean mean_std))) (repeat dim 0))) (repeat n 0))
           covariance_matrices (map (fn [kkk] 
                                 (map (fn [l] 
                                   (map (fn [kkkk] (sample (normal std_mean std_std))) l)
                                 ) 
                                 (zero_matrix dim dim)
-                                )) (zero_vector n)
+                                )) (repeat n 0)
                               )
           chooser (sample (discrete pi))
           model {:n n,
@@ -208,7 +200,7 @@
              covariance_matrix (nth covariance_matrices chooser)
              ]
         (
-          let [coeff-vec (map (fn [kkk] (sample (normal 0 1))) (zero_vector dim))]
+          let [coeff-vec (map (fn [kkk] (sample (normal 0 1))) (repeat dim 0))]
           (
             let [result (map + mean_vector (mat_vec_mult covariance_matrix coeff-vec dim dim))]
               {:model model, :result result}
@@ -221,9 +213,50 @@
 ;; @@
 
 ;; @@
+(with-primitive-procedures [template/zero_matrix template/mat_vec_mult template/indexed_vector]
+  (defquery gaussian-mixture-model [dim data lambda mean_mean mean_std std_mean std_std]
+    (let [n (sample (poisson lambda))
+          pi (sample (dirichlet (repeat n 1)))
+          mean_vectors (map (fn [kkk] (map (fn [kkkk] (sample (normal mean_mean mean_std))) (repeat dim 0))) (repeat n 0))
+          covariance_matrices (map (fn [kkk] 
+                                (map (fn [l] 
+                                  (map (fn [kkkk] (sample (normal std_mean std_std))) l)
+                                ) 
+                                (zero_matrix dim dim)
+                                )) (repeat n 0)
+                              )
+          model {:n n, :pi pi, :mean_vectors mean_vectors, :covariance_matrices covariance_matrices}
+          ]
+      (loop [rest_data data chooser_list (list)]
+        (if (= rest_data (list))
+          (list model chooser_list)
+          (let [chooser (sample (discrete pi))
+                mean_vector (nth mean_vectors chooser)
+                covariance_matrix (nth covariance_matrices chooser)]
+            (let [coeff_vec (map (fn [kkk] (sample (normal 0 1))) (repeat dim 0))
+                  result (map + mean_vector (mat_vec_mult covariance_matrix coeff_vec dim dim))
+                  ]
+                (map (fn [i] (observe (normal (nth result i) 1) (nth (first rest_data) i))) (indexed_vector dim))
+                (recur (rest rest_data) (conj chooser_list chooser))
+                
+              )
+            )
+          )
+        
+        )
+      )
+    )
+  )
+;; @@
+
+;; @@
 (def samples_gmm 
-  (let [s (doquery :importance gaussian-mixture-model [4 2 0 1 0 1])]
+  (let [s (doquery :importance gaussian-mixture-model [2 (list (list 0 0) (list 1 1) (list 2 2)) 2 0 1 0 1])]
     (map :result (take 1 s))))
 
 (println samples_gmm)
+;; @@
+
+;; @@
+
 ;; @@
