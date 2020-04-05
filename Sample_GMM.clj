@@ -1,13 +1,11 @@
 ;; gorilla-repl.fileformat = 1
 
 ;; **
-;;; # Gorilla REPL
+;;; # Gaussian Mixture Model
 ;;; 
-;;; Welcome to gorilla :-)
+;;; Gaussian Mixture Model is a model that views data as probabilistic sum of several multivariate normal random variable.
 ;;; 
-;;; Shift + enter evaluates code. Hit alt+g twice in quick succession or click the menu icon (upper-right corner) for more commands ...
-;;; 
-;;; It's a good habit to run each worksheet in its own namespace: feel free to use the declaration we've provided below if you'd like.
+;;; In machine learning technique, it requires iterative optimization technique, however due to inference engine of anglican, we can directly implement GMM.
 ;; **
 
 ;; @@
@@ -36,7 +34,7 @@
     )
   )
 
-(def samples_random_vector 
+(def samples_random_vector
   (let [s (doquery :importance random_vector [5 0 3])]
     (map :result (take 20 s))))
 
@@ -59,7 +57,7 @@
     )
   )
 
-(def samples_random_matrix 
+(def samples_random_matrix
   (let [s (doquery :importance random_matrix [2 0 1])]
     (map :result (take 20 s))))
 
@@ -123,7 +121,7 @@
                               )) l)) (indexed_matrix a c))
   )
 
-(let 
+(let
   [m1 (list (list 1 2 3) (list 3 2 1) (list 2 2 2))
    m2 (list (list 1 2 3) (list 3 2 1))
    ]
@@ -142,7 +140,7 @@
     )
   )
 
-(def samples_positive-semidefinite_symmetric_matrix 
+(def samples_positive-semidefinite_symmetric_matrix
   (let [s (doquery :importance random_positive-semidefinite_symmetric_matrix [2 0 1])]
     (map :result (take 20 s))))
 
@@ -168,7 +166,7 @@
     )
   )
 
-(def samples_multivariate_normal 
+(def samples_multivariate_normal
   (let [s (doquery :importance multivariate_normal [2 (list 0 0) (list (list 1 0.5) (list 0.5 1))])]
     (map :result (take 20 s))))
 
@@ -182,10 +180,10 @@
     (let [n (sample (poisson lambda))
           pi (sample (dirichlet (repeat n 1)))
           mean_vectors (map (fn [kkk] (map (fn [kkkk] (sample (normal mean_mean mean_std))) (repeat dim 0))) (repeat n 0))
-          covariance_matrices (map (fn [kkk] 
-                                (map (fn [l] 
+          covariance_matrices (map (fn [kkk]
+                                (map (fn [l]
                                   (map (fn [kkkk] (sample (normal std_mean std_std))) l)
-                                ) 
+                                )
                                 (zero_matrix dim dim)
                                 )) (repeat n 0)
                               )
@@ -218,10 +216,10 @@
     (let [n (sample (poisson lambda))
           pi (sample (dirichlet (repeat n 1)))
           mean_vectors (map (fn [kkk] (map (fn [kkkk] (sample (normal mean_mean mean_std))) (repeat dim 0))) (repeat n 0))
-          covariance_matrices (map (fn [kkk] 
-                                (map (fn [l] 
+          covariance_matrices (map (fn [kkk]
+                                (map (fn [l]
                                   (map (fn [kkkk] (sample (normal std_mean std_std))) l)
-                                ) 
+                                )
                                 (zero_matrix dim dim)
                                 )) (repeat n 0)
                               )
@@ -234,15 +232,12 @@
                 mean_vector (nth mean_vectors chooser)
                 covariance_matrix (nth covariance_matrices chooser)]
             (let [coeff_vec (map (fn [kkk] (sample (normal 0 1))) (repeat dim 0))
-                  result (map + mean_vector (mat_vec_mult covariance_matrix coeff_vec dim dim))
-                  ]
+                  result (map + mean_vector (mat_vec_mult covariance_matrix coeff_vec dim dim))]
                 (map (fn [i] (observe (normal (nth result i) 1) (nth (first rest_data) i))) (indexed_vector dim))
                 (recur (rest rest_data) (conj chooser_list chooser))
-                
               )
             )
           )
-        
         )
       )
     )
@@ -250,13 +245,14 @@
 ;; @@
 
 ;; @@
-(def samples_gmm 
-  (let [s (doquery :importance gaussian-mixture-model [2 (list (list 0 0) (list 1 1) (list 2 2)) 2 0 1 0 1])]
+; Some error produced
+; 1. With large enough lambda, we have index out of bounds exception.
+; 2. With low probability, we have NumberIsTooLargeException. 
+
+
+(def samples_gmm
+  (let [s (doquery :importance gaussian-mixture-model [2 (list (list 0.0 0.0) (list 1.0 1.0) (list 2.0 2.0)) 2 0 1 0 1])]
     (map :result (take 1 s))))
 
 (println samples_gmm)
-;; @@
-
-;; @@
-
 ;; @@
