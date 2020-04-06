@@ -17,10 +17,7 @@
 
 ;; @@
 (defn zero_vector [m]
-  (if (= m 1)
-    (list 0)
-    (conj (zero_vector (- m 1)) 0)
-    )
+  (repeat m 0)
   )
 
 (zero_vector 5)
@@ -39,6 +36,16 @@
     (map :result (take 20 s))))
 
 (println samples_random_vector)
+;; @@
+
+;; @@
+(defdist normal_vector
+  "N dimensional independent normal vector"
+  [n mean std]  ; distribution parameters
+  []   ; auxiliary bindings
+     (sample* [this] (map (fn [k] (sample* (normal mean std))) (repeat n 0)))
+     (observe* [this value] (exp (reduce + (map (fn [v] (observe* (normal mean std) v)) value) 0)))
+  )
 ;; @@
 
 ;; @@
@@ -62,6 +69,16 @@
     (map :result (take 20 s))))
 
 (println samples_random_matrix)
+;; @@
+
+;; @@
+(defdist normal_matrix
+  "m*n independent normal matrix"
+  [m n mean std]  ; distribution parameters
+  []   ; auxiliary bindings
+     (sample* [this] (map (fn [l] (map (fn [k] (sample* (normal mean std))) l)) (zero_matrix m n)))
+     (observe* [this value] (exp (reduce + (map (fn [l] (reduce + (map (fn [v] (observe* (normal mean std) v)) l) 0)) value) 0)))
+  )
 ;; @@
 
 ;; @@
@@ -247,7 +264,7 @@
 ;; @@
 ; Some error produced
 ; 1. With large enough lambda, we have index out of bounds exception.
-; 2. With low probability, we have NumberIsTooLargeException. 
+; 2. With low probability, we have NumberIsTooLargeException.
 
 
 (def samples_gmm
