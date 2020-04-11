@@ -31,3 +31,13 @@ Before you commit, erase all outputs of code segment. You can do it by alt+g -> 
 Do not commit unnecessary files like syntex from latex or clj~. If such file exists, add it to .gitignore.
 
 Be sure to add simple description what you have done when you commit.
+
+## Other literatures
+
+A Novel Gaussian Mixture Model for Classification - IEEE Conference Publication - <https://ieeexplore.ieee.org/abstract/document/8914215>
+
+Kernel Trick Embedded Gaussian Mixture Model <http://bigeye.au.tsinghua.edu.cn/english/paper/ALT03.pdf>
+
+Fuzzy Gaussian Mixture Model <https://www.sciencedirect.com/science/article/abs/pii/S0031320311003852>
+
+Mixture of experts: a literature survey <https://link.springer.com/article/10.1007/s10462-012-9338-y>
