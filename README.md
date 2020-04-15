@@ -3,6 +3,11 @@ This repository is sourceforge for group project in CS423, probprog in KAIST.
 
 We are considering implementing GMM-like algorithm in anglican. It may be changed.
 
+1. Mixture of experts based on GMM.
+2. Boolean function generator
+3. Probabilistic Automata
+4. Markov process based reinforcement learning
+
 ## Some references
 iff condition for covariance matrix : <http://www.fepress.org/wp-content/uploads/2014/06/ch7-iff-covariance_correlation_matrix.pdf>
 
