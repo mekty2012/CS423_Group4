@@ -18,6 +18,9 @@ AutoML is one of major challenge in machine learning society, where purpose is f
 
 Again, probabilistic programming can solve this problem. For example, we can nest hyperparameters so that they are tuned with training.
 
+Other one is expressibility. Since our programming language allows recursion - which yields similar notion to turing completeness - the generative model expressed may not be expressed by mathematical models. This is one another benefit. I'm not sure what choice shows this well.
+
+- is random process corecursion?
 ```
 mu' ~ uniform-continuous(0, 10)
 mu ~ normal(0, mu')
