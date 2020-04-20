@@ -17,10 +17,6 @@ Then the probabilistic programming allows any strange models. This is one main a
 AutoML is one of major challenge in machine learning society, where purpose is fully automate machine learning procedure. The problem is hyperparameter, for example degree in polynomial regression, number of mixtures in GMM, number of layer and size of dimension in deep neural network. These parameters are not differentiable, even semantic. 
 
 Again, probabilistic programming can solve this problem. For example, we can nest hyperparameters so that they are tuned with training.
-
-Other one is expressibility. Since our programming language allows recursion - which yields similar notion to turing completeness - the generative model expressed may not be expressed by mathematical models. This is one another benefit. I'm not sure what choice shows this well.
-
-- is random process corecursion?
 ```
 mu' ~ uniform-continuous(0, 10)
 mu ~ normal(0, mu')
@@ -34,6 +30,10 @@ covariances ~ n*n* (normal(mu, variance))
 ```
 
 This can be shown in any examples.
+
+Other one is expressibility. Since our programming language allows recursion - which yields similar notion to turing completeness - the generative model expressed may not be expressed by mathematical models. This is one another benefit. I'm not sure what choice shows this well.
+
+- is random process corecursion?
 ## Some references
 iff condition for covariance matrix : <http://www.fepress.org/wp-content/uploads/2014/06/ch7-iff-covariance_correlation_matrix.pdf>
 
