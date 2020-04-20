@@ -34,6 +34,31 @@ This can be shown in any examples.
 Other one is expressibility. Since our programming language allows recursion - which yields similar notion to turing completeness - the generative model expressed may not be expressed by mathematical models. This is one another benefit. I'm not sure what choice shows this well.
 
 - is random process corecursion?
+## Inverse problems and machine learning
+Conditional Sampling from Invertible Generative Models with Applications to Inverse Problems <arxiv.org/abs/2002.11743>
+
+A Novel Learnable Gradient Descent Type Algorithm for Non-convex Non-smooth Inverse Problems <arxiv.org/abs/2003.06748>
+
+Solving Inverse Problems by Join Posterior Maximization with a VAE Prior <arxiv.org/abs/1911.06379>
+
+Adaptive particle-based approximation of the Gibbs posterior for inverse problems <arxiv.org/abs/1907.01551>
+
+Invertible generative models for inverse problems: mitigating representation error and dataset bias <arxiv.org/abs/1905.11672>
+
+Variational Inference for Computational Imaging Inverse Problems <arxiv.org/abs/1904.06264>
+
+Algorithmic Aspects of Inverse Problems Using Generative Models <arxiv.org/abs/1810.03587>
+
+Probabilistic Numerical Methods for PDE-constrained Bayesian Inverse Problems <arxiv.org/abs/1701.04006>
+
+Inverse Problems with Invariant Multiscale Statistics <arxiv.org/abs/1609.05502>
+
+Inverse problems in approximate uniform generation <arxiv.org/abs/1211.1722>
+
+Solving Inverse Problems with Piecewise Linear Estimators: From Gaussian Mixture Models to Structured Sparsity <arxiv.org/abs/1006.3056>
+
+These papers are search results at arxiv.org, with search word "Inverse Problem" in field computer science.
+
 ## Some references
 iff condition for covariance matrix : <http://www.fepress.org/wp-content/uploads/2014/06/ch7-iff-covariance_correlation_matrix.pdf>
 
@@ -45,7 +70,7 @@ Some other methods for creating random matrix : <https://en.wikipedia.org/wiki/R
 
 So mixture of experts is beneficial when applied to inverse problem. Simple reason is that mixture of experts may return multiple values - though probabilistic. Consider function y=x^2. then we know that inverse function is x=sqrt(y) or -sqrt(y). Then our mixture of experts divides space into two space, x>0 and x<0. And then it returns sqrt(y) for x>0, and -sqrt(y) for x<0. This is simple explanation of why mixture of experts works well in inverse problem.
 
-## Outline of algorithm
+## Outline of GMM algorithm
 0. Assume m-dimensional data set.
 1. First, sample n from poisson(lambda), where lambda is given as parameter.
 2. Let pi_i for i=1...n, be weight of each multinomral.
