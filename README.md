@@ -35,30 +35,36 @@ Other one is expressibility. Since our programming language allows recursion - w
 
 - is random process corecursion?
 ## Inverse problems and machine learning
-Conditional Sampling from Invertible Generative Models with Applications to Inverse Problems <arxiv.org/abs/2002.11743>
+Conditional Sampling from Invertible Generative Models with Applications to Inverse Problems <https://arxiv.org/abs/2002.11743>
 
-A Novel Learnable Gradient Descent Type Algorithm for Non-convex Non-smooth Inverse Problems <arxiv.org/abs/2003.06748>
+A Novel Learnable Gradient Descent Type Algorithm for Non-convex Non-smooth Inverse Problems <https://arxiv.org/abs/2003.06748>
 
-Solving Inverse Problems by Join Posterior Maximization with a VAE Prior <arxiv.org/abs/1911.06379>
+Solving Inverse Problems by Join Posterior Maximization with a VAE Prior <https://arxiv.org/abs/1911.06379>
 
-Adaptive particle-based approximation of the Gibbs posterior for inverse problems <arxiv.org/abs/1907.01551>
+Adaptive particle-based approximation of the Gibbs posterior for inverse problems <https://arxiv.org/abs/1907.01551>
 
-Invertible generative models for inverse problems: mitigating representation error and dataset bias <arxiv.org/abs/1905.11672>
+Invertible generative models for inverse problems: mitigating representation error and dataset bias <https://arxiv.org/abs/1905.11672>
 
-Variational Inference for Computational Imaging Inverse Problems <arxiv.org/abs/1904.06264>
+Variational Inference for Computational Imaging Inverse Problems <https://arxiv.org/abs/1904.06264>
 
-Algorithmic Aspects of Inverse Problems Using Generative Models <arxiv.org/abs/1810.03587>
+Algorithmic Aspects of Inverse Problems Using Generative Models <https://arxiv.org/abs/1810.03587>
 
-Probabilistic Numerical Methods for PDE-constrained Bayesian Inverse Problems <arxiv.org/abs/1701.04006>
+Probabilistic Numerical Methods for PDE-constrained Bayesian Inverse Problems <https://arxiv.org/abs/1701.04006>
 
-Inverse Problems with Invariant Multiscale Statistics <arxiv.org/abs/1609.05502>
+Inverse Problems with Invariant Multiscale Statistics <https://arxiv.org/abs/1609.05502>
 
-Inverse problems in approximate uniform generation <arxiv.org/abs/1211.1722>
+Inverse problems in approximate uniform generation <https://arxiv.org/abs/1211.1722>
 
-Solving Inverse Problems with Piecewise Linear Estimators: From Gaussian Mixture Models to Structured Sparsity <arxiv.org/abs/1006.3056>
+Solving Inverse Problems with Piecewise Linear Estimators: From Gaussian Mixture Models to Structured Sparsity <https://arxiv.org/abs/1006.3056>
 
 These papers are search results at arxiv.org, with search word "Inverse Problem" in field computer science.
 
+Machine learning approach to inverse problem and unfolding procedure <https://ui.adsabs.harvard.edu/abs/2010arXiv1004.2006G/abstract>
+
+Applying Machine Learning Algorithms to Solve Inverse Problems in Electrical Tomography <https://www.matec-conferences.org/articles/matecconf/abs/2018/69/matecconf_cscc2018_02016/matecconf_cscc2018_02016.html>
+
+Inverse problems in machine learning: An
+application to brain activity interpretation <https://iopscience.iop.org/article/10.1088/1742-6596/135/1/012085/pdf>
 ## Some references
 iff condition for covariance matrix : <http://www.fepress.org/wp-content/uploads/2014/06/ch7-iff-covariance_correlation_matrix.pdf>
 
