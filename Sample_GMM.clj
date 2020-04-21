@@ -14,6 +14,9 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"}
+;; <=
 
 ;; @@
 (defn zero_vector [m]
@@ -44,7 +47,7 @@
   [n mean std]  ; distribution parameters
   []   ; auxiliary bindings
      (sample* [this] (map (fn [k] (sample* (normal mean std))) (repeat n 0)))
-     (observe* [this value] (exp (reduce + (map (fn [v] (observe* (normal mean std) v)) value) 0)))
+     (observe* [this value] (reduce + (map (fn [v] (observe* (normal mean std) v)) value) 0))
   )
 ;; @@
 
@@ -77,7 +80,7 @@
   [m n mean std]  ; distribution parameters
   []   ; auxiliary bindings
      (sample* [this] (map (fn [l] (map (fn [k] (sample* (normal mean std))) l)) (zero_matrix m n)))
-     (observe* [this value] (exp (reduce + (map (fn [l] (reduce + (map (fn [v] (observe* (normal mean std) v)) l) 0)) value) 0)))
+     (observe* [this value] (reduce + (map (fn [l] (reduce + (map (fn [v] (observe* (normal mean std) v)) l) 0)) value) 0))
   )
 ;; @@
 
