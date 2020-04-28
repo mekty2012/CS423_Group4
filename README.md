@@ -65,6 +65,8 @@ Applying Machine Learning Algorithms to Solve Inverse Problems in Electrical Tom
 
 Inverse problems in machine learning: An
 application to brain activity interpretation <https://iopscience.iop.org/article/10.1088/1742-6596/135/1/012085/pdf>
+
+High Dimensional Data Clustering <https://hal.inria.fr/inria-00548591/document>
 ## Some references
 iff condition for covariance matrix : <http://www.fepress.org/wp-content/uploads/2014/06/ch7-iff-covariance_correlation_matrix.pdf>
 
