@@ -100,6 +100,8 @@ Do not commit unnecessary files like syntex from latex or clj~. If such file exi
 
 Be sure to add simple description what you have done when you commit.
 
+Before start, modify your project.clj as this one. <http://klms.kaist.ac.kr/mod/ubboard/article.php?id=350026&bwid=170438>
+
 ## Other literatures
 
 A Novel Gaussian Mixture Model for Classification - IEEE Conference Publication - <https://ieeexplore.ieee.org/abstract/document/8914215>
