@@ -14,3 +14,7 @@ pom.xml.asc
 .cpcache/
 *.clj~
 anglican-user/data/cifar-10-batches-bin/*
+anglican-user/target/repl-port
+anglican-user/.gorilla-port
+*.properties
+*.extract-native-dependencies
