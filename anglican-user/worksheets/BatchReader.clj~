@@ -1,0 +1,41 @@
+(ns batchreader
+  (:require [gorilla-plot.core :as plot]))
+(use 'nstools.ns)
+(require 'mikera.image.core)
+(require 'mikera.image.colours)
+(ns+ template
+  (:like anglican-user.worksheet))
+(defn Example []
+  (with-open [rdr (clojure.java.io/reader "worksheets/CS423_Group4/cifar-10-batches-bin/data_batch_1.bin")]
+    (let [bytestream 
+          firstarray (take-nth 3072 (next (mapcat seq (line-seq rdr))))
+          image (mikera.image.core/new-image 32 32)
+          pixels (mikera.image.core/get-pixels image)]
+      (loop [i 0 j 0]
+        (if (= j 32)
+          image
+          (if (= i 32)
+            (recur 0 (+ j 1))
+            (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components (byte (nth firstarray (+ i (* 32 j)))) (byte (nth firstarray (+ 1024 (+ i (* 32 j))))) (byte (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+            )
+          )
+        )
+      )
+    )
+  )
+(def image (mikera.image.core/new-image 32 32))
+(loop [i 0 j 0]
+  (if (= j 32)
+      image
+      (if (= i 32)
+        (recur 0 (+ j 1))
+        (do 
+          (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components 255 (+ 7 (* 8 i)) (+ 7 (* 8 j))))
+          (recur (+ i 1) j)
+          )
+        )
+    )
+  )
+
+(mikera.image.core/show image)
+
