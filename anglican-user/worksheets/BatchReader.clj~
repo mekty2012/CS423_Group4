@@ -3,12 +3,15 @@
 (use 'nstools.ns)
 (require 'mikera.image.core)
 (require 'mikera.image.colours)
+(require 'byte-streams)
 (ns+ template
   (:like anglican-user.worksheet))
+; This implementation is wrong. We need to modify definition of firstarray so that it uses byte array.
+; Current implementation is using char array, where 1 char may not be single byte.
+
 (defn Example []
   (with-open [rdr (clojure.java.io/reader "worksheets/CS423_Group4/cifar-10-batches-bin/data_batch_1.bin")]
-    (let [bytestream 
-          firstarray (take-nth 3072 (next (mapcat seq (line-seq rdr))))
+    (let [firstarray (take-nth 3072 (next (mapcat seq (line-seq rdr))))
           image (mikera.image.core/new-image 32 32)
           pixels (mikera.image.core/get-pixels image)]
       (loop [i 0 j 0]
@@ -38,4 +41,11 @@
   )
 
 (mikera.image.core/show image)
+(def f (java.io.File. "data/cifar-10-batches-bin/data_batch_1.bin"))
+
+(def st (byte-streams/to-input-stream f))
+
+(def ch (take 1 (byte-streams/convert st (byte-streams/seq-of java.nio.ByteBuffer) {:chunk-size 1024})))
+
+(byte-streams/print-bytes ch)
 
