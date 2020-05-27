@@ -13,4 +13,4 @@ pom.xml.asc
 .nrepl-port
 .cpcache/
 *.clj~
-cifar-10-batches-bin/*
+anglican-user/data/cifar-10-batches-bin/*
