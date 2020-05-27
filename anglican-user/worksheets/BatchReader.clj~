@@ -8,25 +8,42 @@
   (:like anglican-user.worksheet))
 ; This implementation is wrong. We need to modify definition of firstarray so that it uses byte array.
 ; Current implementation is using char array, where 1 char may not be single byte.
+(defn sb2ub [b]
+  (if (< b 0)
+    (+ 256 b)
+    b
+    )
+  )
+
 
 (defn Example []
-  (with-open [rdr (clojure.java.io/reader "worksheets/CS423_Group4/cifar-10-batches-bin/data_batch_1.bin")]
-    (let [firstarray (take-nth 3072 (next (mapcat seq (line-seq rdr))))
+  (let [f (java.io.File. "data/cifar-10-batches-bin/data_batch_1.bin")
+		  st (byte-streams/to-byte-array f)
+		  ch (take 3073 st)
+          firstarray (next ch)
           image (mikera.image.core/new-image 32 32)
           pixels (mikera.image.core/get-pixels image)]
-      (loop [i 0 j 0]
-        (if (= j 32)
+    (loop [i 0 j 0]
+      (if (= j 32)
+        (do
+          (mikera.image.core/show image)
           image
-          (if (= i 32)
-            (recur 0 (+ j 1))
-            (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components (byte (nth firstarray (+ i (* 32 j)))) (byte (nth firstarray (+ 1024 (+ i (* 32 j))))) (byte (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+          )
+        (if (= i 32)
+          (recur 0 (+ j 1))
+          (do
+            (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components 
+                                                     (sb2ub (nth firstarray (+ i (* 32 j)))) 
+                                                     (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j))))) 
+                                                     (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+            (recur (+ i 1) j)
             )
           )
         )
       )
     )
   )
-(def image (mikera.image.core/new-image 32 32))
+(Example)
 (loop [i 0 j 0]
   (if (= j 32)
       image
