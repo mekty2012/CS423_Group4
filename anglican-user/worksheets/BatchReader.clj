@@ -20,6 +20,9 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[nil,nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[nil,nil],nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[[nil,nil],nil],nil],nil],nil]"}
+;; <=
 
 ;; @@
 ; This implementation is wrong. We need to modify definition of firstarray so that it uses byte array.
@@ -30,40 +33,49 @@
     b
     )
   )
-
-
-(defn Example []
+(defn Example [num]
   (let [f (java.io.File. "data/cifar-10-batches-bin/data_batch_1.bin")
-		  st (byte-streams/to-byte-array f)
-		  ch (take 3073 st)
+		  st (byte-streams/to-byte-array f)]
+    (loop [chunk (partition 3073 st) n num]
+      (let [ch (first chunk)
           firstarray (next ch)
           image (mikera.image.core/new-image 32 32)
           pixels (mikera.image.core/get-pixels image)]
-    (loop [i 0 j 0]
-      (if (= j 32)
-        (do
-          (mikera.image.core/show image)
-          image
-          )
-        (if (= i 32)
-          (recur 0 (+ j 1))
-          (do
-            (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components 
-                                                     (sb2ub (nth firstarray (+ i (* 32 j)))) 
-                                                     (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j))))) 
-                                                     (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
-            (recur (+ i 1) j)
-            )
-          )
+        	(print "hi")
+            (loop [i 0 j 0]
+              (if (= j 32)
+                (do
+                  (mikera.image.core/show image)
+                  image
+                  )
+                (if (= i 32)
+                  (recur 0 (+ j 1))
+                  (do
+                    (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components 
+                                                             (sb2ub (nth firstarray (+ i (* 32 j)))) 
+                                                             (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j))))) 
+                                                             (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+                    (recur (+ i 1) j)
+                    )
+                  )
+                )
+              ) 
+              (when (> n 1) (recur (next chunk) (- n 1)))
         )
-      )
     )
   )
+)
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/sb2ub</span>","value":"#'template/sb2ub"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/Example</span>","value":"#'template/Example"}],"value":"[#'template/sb2ub,#'template/Example]"}
+;; <=
 
 ;; @@
-(Example)
+(Example [2])
 ;; @@
+;; ->
+;;; hi
+;; <-
 
 ;; @@
 (loop [i 0 j 0]
