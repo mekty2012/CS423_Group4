@@ -46,7 +46,7 @@
     )
   )
 )
-(Example [2])
+(Example 2)
 (loop [i 0 j 0]
   (if (= j 32)
       image

@@ -20,9 +20,6 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[nil,nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[nil,nil],nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[[nil,nil],nil],nil],nil],nil]"}
-;; <=
 
 ;; @@
 ; This implementation is wrong. We need to modify definition of firstarray so that it uses byte array.
@@ -66,16 +63,10 @@
   )
 )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/sb2ub</span>","value":"#'template/sb2ub"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/Example</span>","value":"#'template/Example"}],"value":"[#'template/sb2ub,#'template/Example]"}
-;; <=
 
 ;; @@
-(Example [2])
+(Example 2)
 ;; @@
-;; ->
-;;; hi
-;; <-
 
 ;; @@
 (loop [i 0 j 0]
