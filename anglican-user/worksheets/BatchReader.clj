@@ -1,13 +1,9 @@
 ;; gorilla-repl.fileformat = 1
 
 ;; **
-;;; # Gorilla REPL
+;;; # Batch Reader
 ;;; 
-;;; Welcome to gorilla :-)
-;;; 
-;;; Shift + enter evaluates code. Hit alt+g twice in quick succession or click the menu icon (upper-right corner) for more commands ...
-;;; 
-;;; It's a good habit to run each worksheet in its own namespace: feel free to use the declaration we've provided below if you'd like.
+;;; This is the clojure file that contains function to read data from the CIFAR 10 images. The version for C is used. Please add some comments and clean it up nicely. 
 ;; **
 
 ;; @@
@@ -43,7 +39,7 @@
               (if (= j 32)
                 (do
                   (mikera.image.core/show image)
-                  image
+                  image ;Loop done. return image
                   )
                 (if (= i 32)
                   (recur 0 (+ j 1))
@@ -64,9 +60,9 @@
 )
 ;; @@
 
-;; @@
-(Example 2)
-;; @@
+;; **
+;;; (Example 2)
+;; **
 
 ;; @@
 (loop [i 0 j 0]
