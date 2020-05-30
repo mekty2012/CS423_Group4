@@ -104,8 +104,7 @@
   (let [box (mikera.image.core/new-image (+ (* 2 n) 1) (+ (* 2 n) 1))]
     (loop [x (- 0 n) y (- 0 n)]
     	(if (= y (+ 1 n))
-            box
-           ;Loop done. Return new image
+            box ;Loop done. Return new image
     		(if (= x (+ 1 n))
               (recur (- 0 n) (+ y 1)) ;One column done, go to next
     		(do
