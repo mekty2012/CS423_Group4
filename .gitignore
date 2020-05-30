@@ -18,3 +18,4 @@ anglican-user/target/repl-port
 anglican-user/.gorilla-port
 *.properties
 *.extract-native-dependencies
+*.DS_Store
