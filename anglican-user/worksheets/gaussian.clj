@@ -19,7 +19,7 @@
 ;; @@
 
 ;; @@
-(defn multi-variable-normal [x mu sigma]
+(defn eval-multi-variable-normal [x mu sigma]
   (let [d (clojure.core.matrix/row-count mu)
         factor (Math/pow (* (Math/pow (* 2 Math/PI) d) (clojure.core.matrix/det sigma)) -0.5)
         x-minus-mu (clojure.core.matrix/sub x mu)
@@ -31,7 +31,24 @@
 ;; @@
 
 ;; @@
-(def test (multi-variable-normal [1 1 1 -1 3 1 2 3 1 1] [0 0 0 0 0 0 0 0 0 0] (clojure.core.matrix/identity-matrix 10)))
+(defn indexed-vec [n]
+  (loop [i (- n 1) l []]
+    (if (= i 0)
+      (cons 0 l)
+      (recur (- i 1) (cons i l))
+      )
+    )
+  )
+
+(defn eval-gaussian-mixture [x pi mu-vec sigma-vec]
+  (map 
+    (fn [i] (* (nth pi i) (eval-multi-variable-normal x (nth mu-vec i) (nth sigma-vec i)))) 
+    (indexed-vec (count pi)))
+  )
+;; @@
+
+;; @@
+(def evalmvn-test (eval-multi-variable-normal [1 1 1 -1 3 1 2 3 1 1] [0 0 0 0 0 0 0 0 0 0] (clojure.core.matrix/identity-matrix 10)))
 
 (print test)
 ;; @@
