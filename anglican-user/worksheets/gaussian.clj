@@ -44,6 +44,41 @@
 ;; @@
 
 ;; @@
+; Test required
+(defdist factor-gmm
+  [n pi mu-vec factor-vec]
+  [inverse-factor-vec (map clojure.core.matrix/inverse factor-vec)]
+  (sample* [this] 
+           (let [chosen (sample* (discrete pi))
+                 mu (nth mu-vec chosen)
+                 factor (nth factor-vec chosen)]
+             (clojure.core.matrix/mmul 
+               factor 
+               (clojure.core.matrix/add 
+                 mu 
+                 (repeatedly n (fn [] (sample* (normal 0 1)))))))
+           )
+  (observe* [this label-value]
+            (let [label (first label-value)
+                  value (rest label-value)
+                  indexed-vec (range 0 n)
+                  gaussian-log-prob-vec (map (fn [i] 
+                                           (let [mu (nth mu-vec i)
+                                                 inv-factor (nth inverse-factor-vec i)]
+                                             (reduce + 
+                                                     (map 
+                                                       (fn [t] (observe* (normal 0 1) t)) 
+                                                       (clojure.core.matrix/mmul 
+                                                         inv-factor 
+                                                         (clojure.core.matrix/sub value mu))))
+                                             )) indexed-vec)
+                  log-prob-vec (map + gaussian-log-prob-vec pi)
+                  sum-prob (reduce + (map (fn [l] (Math/exp l)) log-prob-vec))]
+              (- (nth log-prob-vec label) (Math/log sum-prob))
+              )))
+;; @@
+
+;; @@
 (defn eval-gaussian-mixture [x pi mu-vec sigma-vec]
   "This function returns a vector that contains P(z_i = 1|mu, sigma)."
   (map 
