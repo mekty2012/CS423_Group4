@@ -31,26 +31,18 @@
 ;; @@
 
 ;; @@
-(defn indexed-vec [n]
-  (loop [i (- n 1) l []]
-    (if (= i 0)
-      (cons 0 l)
-      (recur (- i 1) (cons i l))
-      )
-    )
-  )
-
 (defn eval-gaussian-mixture [x pi mu-vec sigma-vec]
+  "This function returns a vector that contains P(z_i = 1|mu, sigma)."
   (map 
     (fn [i] (* (nth pi i) (eval-multi-variable-normal x (nth mu-vec i) (nth sigma-vec i)))) 
-    (indexed-vec (count pi)))
+    (range 0 (count pi)))
   )
 ;; @@
 
 ;; @@
 (def evalmvn-test (eval-multi-variable-normal [1 1 1 -1 3 1 2 3 1 1] [0 0 0 0 0 0 0 0 0 0] (clojure.core.matrix/identity-matrix 10)))
 
-(print test)
+(print evalmvn-test)
 ;; @@
 
 ;; @@
