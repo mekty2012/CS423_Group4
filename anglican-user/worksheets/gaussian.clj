@@ -31,6 +31,19 @@
 ;; @@
 
 ;; @@
+; Test required
+(defdist factor-mvn
+  "Implementation of multivariate normal, where given input is not covariance matrix, but multiplier matrix. "
+  [n mean-vec factor-mat] ; Distribution is factor-mat * ((repeatedly n N(0, 1)) + mean-vec)
+  [inv-factor-mat (clojure.core.matrix/inverse factor-mat)] ; Internal variable that precomputes inverse of factor-mat
+  ; I think this pre-computation is trade off between computation time and numerical accuracy. Maybe linalg/solve uses
+  ; uses smarter algorithm solving Ax=b. I wish anyone of us has taken MAS364...
+  (sample* [this] (clojure.core.matrix/mmul factor-mat (clojure.core.matrix/add (repeatedly n (sample* (normal 0 1))) mean-vec)))
+  (observe* [this value] (reduce + (map (fn [t] (observe* (normal 0 1) t)) (clojure.core.matrix/mmul inv-factor-mat (clojure.core.matrix/sub value mean-vec)))))
+  )
+;; @@
+
+;; @@
 (defn eval-gaussian-mixture [x pi mu-vec sigma-vec]
   "This function returns a vector that contains P(z_i = 1|mu, sigma)."
   (map 
