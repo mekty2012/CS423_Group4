@@ -2,7 +2,7 @@
 
 ;; **
 ;;; # GMM
-;;;
+;;; 
 ;;; This is GMM model. The multi variable normal function is made brand new, and the GMM query is taken from the anglican homepage
 ;; **
 
@@ -78,13 +78,13 @@
   (observe* [this label-value]
             (let [label (first label-value)
                   value (rest label-value)
-                  indexed-vec (range 0 n)
+                  indexed-vec (range 0 (count pi))
                   gaussian-log-prob-vec (map (fn [i]
                                            (let [mu (nth mu-vec i)
                                                  inv-factor (nth inverse-factor-vec i)]
                                              (reduce +
                                                      (map
-                                                       (fn [t]  (observe* (normal 0 1) (first (first t))))
+                                                       (fn [t]  (observe* (normal 0 1) (first t)))
                                                        (clojure.core.matrix/mmul
                                                          inv-factor
                                                          (clojure.core.matrix/transpose
@@ -154,7 +154,7 @@
                  (list [[1 2 3 4 5] [1 1 1 1 1] [3 4 5 6 7] [8 3 4 5 1] [3 4 5 6.2 1]]
                        (identity-matrix 5))
                  )
-               (list 3 [3 3 3 3 3]))
+               (list 0 [3 3 3 3 3]))
     {:x x :y y}
     ))
 )
@@ -163,7 +163,7 @@
 ;; @@
 (def samples-2 (doquery :lmh test-factor-gmm-observe nil))
 
-(def results-2  (take 100 (drop 10000 samples-2)))
+(def results-2  (map :result (take 100 (drop 10000 samples-2))))
 
 (println results-2)
 ;; @@
@@ -172,7 +172,7 @@
 (defn eval-gaussian-mixture [x pi mu-vec sigma-vec]
   "This function returns a vector that contains P(z_i = 1|mu, sigma)."
   (map
-    (fn [i] (* (nth pi i) (eval-multi-variable-normal x (nth mu-vec i) (nth sigma-vec i))))
+    (fn [i] (+ (nth (Math/log pi) i) (eval-multi-variable-normal x (nth mu-vec i) (nth sigma-vec i))))
     (range 0 (count pi)))
   )
 ;; @@
@@ -238,8 +238,4 @@
                 k (sample (discrete pi))]
             (observe (eval-multi-variable-normal (get mu k) (get sigma k)) row)
             (recur (inc n) (conj z k))))))))
-;; @@
-
-;; @@
-
 ;; @@
