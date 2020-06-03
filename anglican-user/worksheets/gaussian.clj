@@ -31,7 +31,7 @@
         inverse (clojure.core.matrix/inverse sigma)
         exponent (clojure.core.matrix/mmul 
                    (clojure.core.matrix/transpose x-minus-mu) inverse x-minus-mu)]
-    	(* factor (Math/exp (* -0.5 exponent)))
+    	(+ (Math/log factor) (* -0.5 exponent))
     )
   )
 ;; @@
@@ -58,7 +58,7 @@
   )
 ;; @@
 ;; =>
-;;; {"type":"html","content":"<span class='clj-unkown'>#multifn[print-method 0x2448b315]</span>","value":"#multifn[print-method 0x2448b315]"}
+;;; {"type":"html","content":"<span class='clj-unkown'>#multifn[print-method 0x5f90c73c]</span>","value":"#multifn[print-method 0x5f90c73c]"}
 ;; <=
 
 ;; @@
@@ -82,11 +82,11 @@
              (clojure.core.matrix/mmul 
                factor 
                (clojure.core.matrix/add 
-                 mu 
+                 mu
                  (repeatedly n (fn [] (sample* (normal 0 1)))))))
            )
   (observe* [this label-value]
-            (let [label (do (println "HI") (first label-value))
+            (let [label (first label-value)
                   value (rest label-value)
                   indexed-vec (range 0 n)
                   gaussian-log-prob-vec (map (fn [i] 
@@ -94,10 +94,12 @@
                                                  inv-factor (nth inverse-factor-vec i)]
                                              (reduce + 
                                                      (map 
-                                                       (fn [t] (observe* (normal 0 1) t)) 
+                                                       (fn [t]  (observe* (normal 0 1) (first (first t)))) 
                                                        (clojure.core.matrix/mmul 
                                                          inv-factor 
-                                                         (clojure.core.matrix/sub value mu))))
+                                                         (clojure.core.matrix/transpose 
+                                                           (clojure.core.matrix/sub value mu)))
+                                                       ))
                                              )) indexed-vec)
                   log-prob-vec (map + gaussian-log-prob-vec pi)
                   sum-prob (reduce + (map (fn [l] (Math/exp l)) log-prob-vec))]
@@ -105,21 +107,21 @@
               )))
 ;; @@
 ;; =>
-;;; {"type":"html","content":"<span class='clj-unkown'>#multifn[print-method 0x2448b315]</span>","value":"#multifn[print-method 0x2448b315]"}
+;;; {"type":"html","content":"<span class='clj-unkown'>#multifn[print-method 0x5f90c73c]</span>","value":"#multifn[print-method 0x5f90c73c]"}
 ;; <=
 
 ;; @@
 (with-primitive-procedures [factor-mvn]
 (defquery test-factor-mvn-sample []
   (let [x (sample (factor-mvn 5 [1 1 1 1 1] [[1 2 3 4 5] [1 1 1 1 1] [3 4 5 6 7] [8 3 4 5 1] [3 4 5 6 1]]))]
-      x
+      {:x x}
     ))
 )
 (with-primitive-procedures [factor-mvn identity-matrix]
 (defquery test-factor-mvn-observe []
   (let [x (sample (normal 5 1))]
       (observe (factor-mvn 5 [x x x x x] (identity-matrix 5)) [3 3 3 3 3])
-    x
+    {:x x}
     ))
 )
 
@@ -135,12 +137,12 @@
 
 (def samples-2 (doquery :lmh test-factor-mvn-observe nil))
 
-(def results-2 (map get-result (take 10 (drop 10 samples-2))))
+(def results-2  (take 10 (drop 10 samples-2)))
 
 (println results-2)
 ;; @@
 ;; ->
-;;; (3.205402380654416 3.205402380654416 3.6670011912879135 4.281240184808163 4.281240184808163 4.281240184808163 4.281240184808163 4.281240184808163 4.281240184808163 4.281240184808163)
+;;; ({:log-weight 0.0, :result {:x 4.0440147815357586}, :predicts []} {:log-weight 0.0, :result {:x 4.0440147815357586}, :predicts []} {:log-weight 0.0, :result {:x 4.0440147815357586}, :predicts []} {:log-weight 0.0, :result {:x 4.0440147815357586}, :predicts []} {:log-weight 0.0, :result {:x 4.0440147815357586}, :predicts []} {:log-weight 0.0, :result {:x 3.003805593714239}, :predicts []} {:log-weight 0.0, :result {:x 3.003805593714239}, :predicts []} {:log-weight 0.0, :result {:x 3.003805593714239}, :predicts []} {:log-weight 0.0, :result {:x 2.5386209911852}, :predicts []} {:log-weight 0.0, :result {:x 2.5386209911852}, :predicts []})
 ;;; 
 ;; <-
 ;; =>
@@ -148,7 +150,49 @@
 ;; <=
 
 ;; @@
+(with-primitive-procedures [factor-gmm identity-matrix]
+(defquery test-factor-gmm-sample []
+  (let [x (sample 
+            (factor-gmm 
+              5 2
+              (list [1 1 1 1 1] [7 7 7 7 7]) 
+              (list [[1 2 3 4 5] [1 1 1 1 1] [3 4 5 6 7] [8 3 4 5 1] [3 4 5 6.2 1]] (identity-matrix 5))))]
+      {:x x}
+    )
+))
+(with-primitive-procedures [factor-gmm identity-matrix]
+(defquery test-factor-gmm-observe []
+  (let [x (sample (normal 5 1))
+        y (sample (normal 7 2))]
+      (observe (factor-gmm 
+                 5 2 
+                 (list [x (+ x 1) x x x] [y y y y y]) 
+                 (list [[1 2 3 4 5] [1 1 1 1 1] [3 4 5 6 7] [8 3 4 5 1] [3 4 5 6.2 1]] identity-matrix 5)) 
+               (list 3 [3 3 3 3 3]))
+    {:x x :y y}
+    ))
+)
+;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/test-factor-gmm-sample</span>","value":"#'templete/test-factor-gmm-sample"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/test-factor-gmm-observe</span>","value":"#'templete/test-factor-gmm-observe"}],"value":"[#'templete/test-factor-gmm-sample,#'templete/test-factor-gmm-observe]"}
+;; <=
 
+;; @@
+(def samples-1 (doquery :lmh test-factor-gmm-sample nil))
+
+(def results-1  (take 10 (drop 10 samples-1)))
+
+(println results-1)
+;; @@
+;; ->
+;;; ({:log-weight 0.0, :result {:x [21.24918699407977 6.908074614002376 35.065336222084525 34.411386702312605 25.519007896904423]}, :predicts []} {:log-weight 0.0, :result {:x [21.25213322765143 7.457005797143738 36.166144821938914 34.04902259892865 24.052645256605977]}, :predicts []} {:log-weight 0.0, :result {:x [19.13027901934386 7.886202076206212 34.90268317175628 38.39067849385132 35.83831505477605]}, :predicts []} {:log-weight 0.0, :result {:x [17.558247537108024 5.660082713261296 28.87841296363062 18.323946626847754 21.14419956079741]}, :predicts []} {:log-weight 0.0, :result {:x [6.400079022810495 2.953822125781674 12.307723274373842 18.297899188502214 8.272799055468372]}, :predicts []} {:log-weight 0.0, :result {:x [10.85722832841914 4.220259564017651 19.297747456454445 24.13255492690621 25.72918891214708]}, :predicts []} {:log-weight 0.0, :result {:x [20.601929371489447 6.2157682830139835 33.03346593751741 21.09955024109423 16.118107697965094]}, :predicts []} {:log-weight 0.0, :result {:x [13.356825732589447 3.558857454488184 20.474540641565817 11.340077931189029 16.918419419607876]}, :predicts []} {:log-weight 0.0, :result {:x [14.798997129753841 4.365251831130264 23.529500792014368 12.350158227350859 12.40113859060784]}, :predicts []} {:log-weight 0.0, :result {:x [6.9973393476306445 4.146412011510234 15.290163370651115 21.832511026711323 13.891877230357217]}, :predicts []})
+;;; 
+;; <-
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/results-1</span>","value":"#'templete/results-1"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[#'templete/results-1,nil]"}
+;; <=
+
+;; @@
 (defn eval-gaussian-mixture [x pi mu-vec sigma-vec]
   "This function returns a vector that contains P(z_i = 1|mu, sigma)."
   (map 
@@ -166,7 +210,7 @@
 (print evalmvn-test)
 ;; @@
 ;; ->
-;;; 5.150277984994693E-11
+;;; -23.689385332046726
 ;; <-
 ;; =>
 ;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/evalmvn-test</span>","value":"#'templete/evalmvn-test"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[#'templete/evalmvn-test,nil]"}
@@ -231,9 +275,6 @@
             (observe (eval-multi-variable-normal (get mu k) (get sigma k)) row)
             (recur (inc n) (conj z k))))))))
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/gmm</span>","value":"#'templete/gmm"}
-;; <=
 
 ;; @@
 
