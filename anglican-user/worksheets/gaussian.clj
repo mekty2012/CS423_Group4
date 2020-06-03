@@ -17,9 +17,6 @@
 (ns+ templete
   (:like anglican-user.worksheet))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"}
-;; <=
 
 ;; @@
 (defn eval-multi-variable-normal [x mu sigma]
@@ -35,9 +32,6 @@
     )
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/eval-multi-variable-normal</span>","value":"#'templete/eval-multi-variable-normal"}
-;; <=
 
 ;; @@
 ; Test required
@@ -45,30 +39,26 @@
 (defdist factor-mvn [n mean-vec factor-mat] ; Distribution is factor-mat * ((repeatedly n N(0, 1)) + mean-vec)
   [inv-factor-mat (clojure.core.matrix/inverse factor-mat)] ; Internal variable that precomputes inverse of factor-mat
   (sample* [this]
-           (clojure.core.matrix/mmul
-             factor-mat 
-             (clojure.core.matrix/add 
-               (repeatedly n (fn [] (sample* (normal 0 1)))) mean-vec)
+           (clojure.core.matrix/add
+             mean-vec 
+             (clojure.core.matrix/mmul 
+               factor-mat
+               (repeatedly n (fn [] (sample* (normal 0 1)))))
              ))
   (observe* [this value] 
             (reduce + (map (fn [t] (observe* (normal 0 1) t)) 
-                           (clojure.core.matrix/mmul 
-                             inv-factor-mat (clojure.core.matrix/sub value mean-vec))
+                           (clojure.core.matrix/sub 
+                             (clojure.core.matrix/mmul inv-factor-mat value)
+                             mean-vec)
                            )))
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-unkown'>#multifn[print-method 0x2448b315]</span>","value":"#multifn[print-method 0x2448b315]"}
-;; <=
 
 ;; @@
 (defn identity-matrix [n]
   (clojure.core.matrix/identity-matrix n)
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/identity-matrix</span>","value":"#'templete/identity-matrix"}
-;; <=
 
 ;; @@
 ; Test required
@@ -79,11 +69,9 @@
            (let [chosen (sample* (discrete pi))
                  mu (nth mu-vec chosen)
                  factor (nth factor-vec chosen)]
-             (clojure.core.matrix/mmul 
-               factor 
-               (clojure.core.matrix/add 
-                 mu 
-                 (repeatedly n (fn [] (sample* (normal 0 1)))))))
+             (clojure.core.matrix/add
+               mu
+               (clojure.core.matrix/mmul factor (repeatedly n (fn [] (sample* (normal 0 1)))))))
            )
   (observe* [this label-value]
             (let [label (do (println "HI") (first label-value))
@@ -95,18 +83,15 @@
                                              (reduce + 
                                                      (map 
                                                        (fn [t] (observe* (normal 0 1) t)) 
-                                                       (clojure.core.matrix/mmul 
-                                                         inv-factor 
-                                                         (clojure.core.matrix/sub value mu))))
+                                                       (clojure.core.matrix/sub
+                                                         (clojure.core.matrix/mmul inv-factor value) 
+                                                         mu)))
                                              )) indexed-vec)
                   log-prob-vec (map + gaussian-log-prob-vec pi)
                   sum-prob (reduce + (map (fn [l] (Math/exp l)) log-prob-vec))]
               (- (nth log-prob-vec label) (Math/log sum-prob))
               )))
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-unkown'>#multifn[print-method 0x2448b315]</span>","value":"#multifn[print-method 0x2448b315]"}
-;; <=
 
 ;; @@
 (with-primitive-procedures [factor-mvn]
@@ -124,9 +109,6 @@
 )
 
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/test-factor-mvn-sample</span>","value":"#'templete/test-factor-mvn-sample"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/test-factor-mvn-observe</span>","value":"#'templete/test-factor-mvn-observe"}],"value":"[#'templete/test-factor-mvn-sample,#'templete/test-factor-mvn-observe]"}
-;; <=
 
 ;; @@
 (def samples-1 (doquery :lmh test-factor-mvn-sample nil))
@@ -139,13 +121,6 @@
 
 (println results-2)
 ;; @@
-;; ->
-;;; (3.205402380654416 3.205402380654416 3.6670011912879135 4.281240184808163 4.281240184808163 4.281240184808163 4.281240184808163 4.281240184808163 4.281240184808163 4.281240184808163)
-;;; 
-;; <-
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/samples-1</span>","value":"#'templete/samples-1"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/results-1</span>","value":"#'templete/results-1"}],"value":"[#'templete/samples-1,#'templete/results-1]"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/samples-2</span>","value":"#'templete/samples-2"}],"value":"[[#'templete/samples-1,#'templete/results-1],#'templete/samples-2]"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/results-2</span>","value":"#'templete/results-2"}],"value":"[[[#'templete/samples-1,#'templete/results-1],#'templete/samples-2],#'templete/results-2]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[#'templete/samples-1,#'templete/results-1],#'templete/samples-2],#'templete/results-2],nil]"}
-;; <=
 
 ;; @@
 
@@ -156,21 +131,12 @@
     (range 0 (count pi)))
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/eval-gaussian-mixture</span>","value":"#'templete/eval-gaussian-mixture"}
-;; <=
 
 ;; @@
 (def evalmvn-test (eval-multi-variable-normal [1 1 1 -1 3 1 2 3 1 1] [0 0 0 0 0 0 0 0 0 0] (clojure.core.matrix/identity-matrix 10)))
 
 (print evalmvn-test)
 ;; @@
-;; ->
-;;; 5.150277984994693E-11
-;; <-
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/evalmvn-test</span>","value":"#'templete/evalmvn-test"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[#'templete/evalmvn-test,nil]"}
-;; <=
 
 ;; @@
 (defn row-mean [data] (clojure.core.matrix.operators// (reduce clojure.core.matrix.operators/+ data) (clojure.core.matrix/row-count data)))
@@ -188,9 +154,6 @@
   )
 
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/row-mean</span>","value":"#'templete/row-mean"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/invert</span>","value":"#'templete/invert"}],"value":"[#'templete/row-mean,#'templete/invert]"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/shape</span>","value":"#'templete/shape"}],"value":"[[#'templete/row-mean,#'templete/invert],#'templete/shape]"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/get-row</span>","value":"#'templete/get-row"}],"value":"[[[#'templete/row-mean,#'templete/invert],#'templete/shape],#'templete/get-row]"}
-;; <=
 
 ;; @@
 (with-primitive-procedures [row-mean invert shape identity-matrix get-row]
@@ -231,9 +194,6 @@
             (observe (eval-multi-variable-normal (get mu k) (get sigma k)) row)
             (recur (inc n) (conj z k))))))))
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/gmm</span>","value":"#'templete/gmm"}
-;; <=
 
 ;; @@
 
