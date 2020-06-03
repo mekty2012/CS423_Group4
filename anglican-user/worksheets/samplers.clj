@@ -26,27 +26,43 @@
 (defm cluster-num-sampler [lambda]
   (sample (poisson lambda))
   )
-
-(defm tuned-cluster-num-sample [a b]
-  (let [lambda (sample (gamma a b))]
-    {:lambda lambda :n (sample (poisson lambda))})
-  )
 ;; @@
 
 ;; @@
-(defm pi-sampler [n alpha]
+(defm pi-sampler [hyperparameters]
+  (let [n (:n hyperparameters)
+        alpha (:alpha hyperparameters)]
   (sample (dirichlet (repeat n alpha)))
+    )
   )
 
-(defm mu-sampler [n mu-mu mu-sigma]
+(defm mu-sampler [hyperparameters]
+  (let [n (:n hyperparameters)
+        mu-mu (:mu-mu hyperparameters)
+        mu-sigma (:mu-sigma hyperparameters)]
   (repeatedly n (fn [] (sample (normal mu-mu mu-sigma)))
   ))
+  )
 
-(defm factor-sampler [n factor-mu factor-sigma]
-  (repeatedly n (fn [] (repeatedly n (fn [] (sample (normal factor-mu factor-sigma)))))))
+(defm factor-sampler [hyperparameters]
+  (let [n (:n hyperparameters)
+        factor-mu (:factor-mu hyperparameters)
+        factor-sigma (:factor-sigma hyperparameters)
+        ]
+    (repeatedly n (fn [] (repeatedly n (fn [] (sample (normal factor-mu factor-sigma))))))
+    )
+)
+  
 
-(defm gmm-sampler [n lambda alpha mu-mu mu-sigma factor-mu factor-sigma]
-  (let [num_cluster (cluster-num-sampler lambda)
+(defm gmm-sampler [hyperparameters]
+  (let [n (:n hyperparameters)
+        lambda (:lambda hyperparameters)
+        alpha (:alpha hyperparameters)
+        mu-mu (:mu-mu hyperparameters)
+        mu-sigma (:mu-sigma hyperparameters)
+        factor-mu (:factor-mu hyperparameters)
+        factor-sigma (:factor-sigma hyperparameters)
+        num_cluster (cluster-num-sampler lambda)
         pi (pi-sampler num_cluster alpha)
         mu_vec (repeatedly num_cluster (fn [] (mu-sampler n mu-mu mu-sigma)))
         factor_vec (repeatedly num_cluster (fn [] (factor-sampler n factor-mu factor-sigma)))]
@@ -71,8 +87,15 @@
 ;; @@
 
 ;; @@
-(defm single-moe-sampler [n lambda alpha mu-mu mu-sigma factor-mu factor-sigma]
-  (let [num_cluster (cluster-num-sampler lambda)
+(defm single-moe-sampler [hyperparameters]
+  (let [n (:n hyperparameters)
+        lambda (:lambda hyperparameters)
+        alpha (:alpha hyperparameters)
+        mu-mu (:mu-mu hyperparameters)
+        mu-sigma (:mu-sigma hyperparameters)
+        factor-mu (:factor-mu hyperparameters)
+        factor-sigma (:factor-sigma hyperparameters)
+        num_cluster (cluster-num-sampler lambda)
         pi (pi-sampler num_cluster alpha)
         mu_vec (repeatedly num_cluster (fn [] (mu-sampler n mu-mu mu-sigma)))
         factor_vec (repeatedly num_cluster (fn [] (factor-sampler n factor-mu factor-sigma)))
@@ -98,16 +121,26 @@
         mu-sigma (:mu-sigma hyperparameters)
         factor-mu (:factor-mu hyperparameters)
         factor-sigma (:factor-sigma hyperparameters)
+        
         num_cluster (cluster-num-sampler lambda)
-        pi (pi-sampler num_cluster alpha)
-        mu_vec (repeatedly num_cluster (fn [] (mu-sampler n mu-mu mu-sigma)))
-        factor_vec (repeatedly num_cluster (fn [] (factor-sampler n factor-mu factor-sigma)))
-        ischild_vec (repeatedly num_cluster (fn [] (sample (bernoulli p))))
+        
+        pi (pi-sampler {:n num_cluster :alpha alpha})
+        
+        mu_vec (repeatedly num_cluster 
+                           (fn [] (mu-sampler {:n n :mu-mu mu-mu :mu-sigma mu-sigma})))
+        
+        factor_vec (repeatedly num_cluster 
+                               (fn [] (factor-sampler {:n n :factor-mu factor-mu :factor-sigma factor-sigma})))
+        
+        ischild_vec (repeatedly num_cluster 
+                                (fn [] (sample (bernoulli p))))
+        
         child_vec (map (fn [i] 
                          (if (= i 1) 
                            (hierarchical_moe_sampler hyperparameters)
                            (kernel-sampler n)
                            )) ischild_vec)]
+ 
       {:num_cluster num_cluster
        :pi pi
        :mu_vec mu_vec
@@ -136,4 +169,8 @@
 
 ;; @@
 (def sample (doquery :lmh test-hierarchical-moe-sampler 5 0.8 3 1.5 0 1 1 1))
+;; @@
+
+;; @@
+
 ;; @@
