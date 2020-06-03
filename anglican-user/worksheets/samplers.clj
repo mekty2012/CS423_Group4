@@ -71,7 +71,7 @@
 ;; @@
 
 ;; @@
-(defm single_moe_sampler [n lambda alpha mu-mu mu-sigma factor-mu factor-sigma]
+(defm single-moe-sampler [n lambda alpha mu-mu mu-sigma factor-mu factor-sigma]
   (let [num_cluster (cluster-num-sampler lambda)
         pi (pi-sampler num_cluster alpha)
         mu_vec (repeatedly num_cluster (fn [] (mu-sampler n mu-mu mu-sigma)))
@@ -87,15 +87,25 @@
 ;; @@
 
 ;; @@
-(defm hierarchical_moe_sampler [n p lambda alpha mu-mu mu-sigma factor-mu factor-sigma]
-  (let [num_cluster (cluster-num-sampler lambda)
+;n p  lambda alpha mu-mu mu-sigma factor-mu factor-sigma
+
+(defm hierarchical-moe-sampler [hyperparameters]
+  (let [n (:n hyperparameters)
+        p (:p hyperparameters)
+        lambda (:lambda hyperparameters)
+        alpha (:alpha hyperparameters)
+        mu-mu (:mu-mu hyperparameters)
+        mu-sigma (:mu-sigma hyperparameters)
+        factor-mu (:factor-mu hyperparameters)
+        factor-sigma (:factor-sigma hyperparameters)
+        num_cluster (cluster-num-sampler lambda)
         pi (pi-sampler num_cluster alpha)
         mu_vec (repeatedly num_cluster (fn [] (mu-sampler n mu-mu mu-sigma)))
         factor_vec (repeatedly num_cluster (fn [] (factor-sampler n factor-mu factor-sigma)))
         ischild_vec (repeatedly num_cluster (fn [] (sample (bernoulli p))))
         child_vec (map (fn [i] 
                          (if (= i 1) 
-                           (hierarchical_moe_sampler n p lambda alpha mu-mu mu-sigma factor-mu factor-sigma)
+                           (hierarchical_moe_sampler hyperparameters)
                            (kernel-sampler n)
                            )) ischild_vec)]
       {:num_cluster num_cluster
@@ -106,4 +116,24 @@
        :child_vec child_vec}
     )
   )
+;; @@
+
+;; @@
+(defquery test-hierarchical-moe-sampler [n p lambda alpha mu-mu mu-sigma factor-mu factor-sigma]
+  (let [x (hierarchical-moe-sampler 
+            {:n n
+             :p p
+             :lambda lambda
+             :alpha alpha
+             :mu-mu mu-mu
+             :mu-sigma mu-sigma
+             :factor-mu factor-mu
+             :factor-sigma factor-sigma})]
+    {:x x}
+    )
+  )
+;; @@
+
+;; @@
+(def sample (doquery :lmh test-hierarchical-moe-sampler 5 0.8 3 1.5 0 1 1 1))
 ;; @@

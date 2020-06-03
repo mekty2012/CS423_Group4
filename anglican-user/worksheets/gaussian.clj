@@ -114,7 +114,6 @@
     {:x x}
     ))
 )
-
 ;; @@
 
 ;; @@
@@ -184,7 +183,8 @@
 ;; @@
 
 ;; @@
-(defn row-mean [data] (clojure.core.matrix.operators// (reduce clojure.core.matrix.operators/+ data) (clojure.core.matrix/row-count data)))
+(defn row-mean [data] (clojure.core.matrix.operators// (reduce clojure.core.matrix.operators/+ data)
+                                                       (clojure.core.matrix/row-count data)))
 
 (defn invert
   ([W] (clojure.core.matrix.linear/solve W))
@@ -197,7 +197,6 @@
 (defn get-row [matrix]
   (clojure.core.matrix/get-row matrix)
   )
-
 ;; @@
 
 ;; @@
