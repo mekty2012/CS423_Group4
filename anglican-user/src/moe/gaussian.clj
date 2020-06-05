@@ -7,7 +7,7 @@
 ;; **
 
 ;; @@
-(ns gaussian-mixture
+(ns moe.gaussian
   (:require [gorilla-plot.core]
             [clojure.core.matrix
              :refer [matrix diagonal-matrix to-nested-vectors div ecount]]

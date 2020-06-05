@@ -7,7 +7,7 @@
 ;; **
 
 ;; @@
-(ns pre-process
+(ns moe.preprocess
   (:require [gorilla-plot.core :as plot]))
 (use 'nstools.ns)
 (require 'mikera.image.core)

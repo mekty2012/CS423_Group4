@@ -7,7 +7,7 @@
 ;; **
 
 ;; @@
-(ns batch-reader
+(ns moe.BatchReader
   (:require [gorilla-plot.core :as plot]))
 (use 'nstools.ns)
 (require 'mikera.image.core)

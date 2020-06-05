@@ -11,7 +11,7 @@
 ;; **
 
 ;; @@
-(ns gmm-generator
+(ns moe.samplers
   (:require [gorilla-plot.core]
             [clojure.core.matrix
              :refer [matrix diagonal-matrix to-nested-vectors div ecount]]

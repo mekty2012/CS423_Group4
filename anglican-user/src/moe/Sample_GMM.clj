@@ -9,7 +9,7 @@
 ;; **
 
 ;; @@
-(ns simple-gmm)
+(ns moe.Sample_GMM)
 (use 'nstools.ns)
 (ns+ template
   (:like anglican-user.worksheet))
