@@ -135,3 +135,25 @@
 
 (mikera.image.core/show sevenbox00)
 ;; @@
+
+;; @@
+(defn im2vec [image n]
+  (loop [x (- n 1) y (- n 1) l nil]
+    (if (= y -1)
+      l
+      (if (= x -1)
+        (recur (- n 1) (- y 1) l)
+        (recur (- x 1) y (cons (mikera.image.core/get-pixel image x y) l))
+        )
+      )
+    )
+  )
+;; @@
+
+;; @@
+(map mikera.image.colours/components-rgb (im2vec sevenbox00 7))
+;; @@
+
+;; @@
+
+;; @@
