@@ -18,21 +18,18 @@
 ;; @@
 
 ;; @@
-(defn im-to-mx[image]
-  (let []
-    (map (fn [x] (- (/ x 127.5) 1)) image)
-    ))
+(defn im-to-mx [image]
+  (map (fn [x] (- (/ x 127.5) 1)) image))
 ;; @@
 
 ;; @@
-; This implementation is wrong. We need to modify definition of firstarray so that it uses byte array. FIXED
-; Current implementation is using char array, where 1 char may not be single byte. FIXED
 (defn sb2ub [b]
   (if (< b 0)
     (+ 256 b)
     b
     )
   )
+
 (defn Example [num]
   (let [f (java.io.File. "data/cifar-10-batches-bin/data_batch_1.bin")
 		  st (byte-streams/to-byte-array f)]
@@ -58,7 +55,7 @@
                                                              (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
                     (conj immx (/ (reduce + 0.0 (list (sb2ub (nth firstarray (+ i (* 32 j))))
                                                       (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j)))))
-                                                      (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j))))))) 3)) ;; / 계산까지는 잘 됐는데 어째 conj가 안 먹는다.. do에서 왜 이걸 실행을 안시키지
+                                                      (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j))))))) 3)) 
                     (recur (+ i 1) j)
                     )
                   )
@@ -72,7 +69,39 @@
 ;; @@
 
 ;; @@
-(Example 1)
+(defn forImages [file-name num do-fun]
+  "Read file-name, to 32*32 images, and for each image, apply do-fun. It will perform do-fun for n images."
+  (let [f (java.io.File. file-name)
+		  st (byte-streams/to-byte-array f)]
+    (loop [chunk (partition 3073 st) n num]
+      (let [ch (first chunk)
+            firstarray (next ch)
+            image (mikera.image.core/new-image 32 32)
+            pixels (mikera.image.core/get-pixels image)]
+        	(loop [i 0 j 0]
+              (if (= j 32)
+                (do-fun image)
+                (if (= i 32)
+                  (recur 0 (+ j 1))
+                  (do
+                    (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components
+                                                             (sb2ub (nth firstarray (+ i (* 32 j))))
+                                                             (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j)))))
+                                                             (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+                    (recur (+ i 1) j)
+                    )
+                  )
+                )
+              ) 
+              (when (> n 1) (recur (next chunk) (- n 1)))
+        )
+      )
+    )
+  )
+;; @@
+
+;; @@
+(forImages "data/cifar-10-batches-bin/data_batch_1.bin" 2 (fn [im] (mikera.image.core/show im)))
 ;; @@
 
 ;; @@
