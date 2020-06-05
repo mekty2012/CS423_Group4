@@ -25,5 +25,26 @@
 ;; @@
 
 ;; @@
-(defquery Moe [image_name])
+; import not working?
+(defn for-nbox [image n nbox-fun]
+  (let [dropped (pre-process/dropoutted image 0.3)]
+    (loop [x 0 y 0]
+      (if (= y 32)
+        nil
+        (if (= x 32)
+          (recur 0 (inc y))
+          (do
+            (let [box (pre-process/nbox image n x y)
+                  box-vector (pre-process/im2vec box)]
+              (nbox-fun box-vector))
+            (recur (inc x) y)
+            )
+          )
+        )
+    ))
+  )
+;; @@
+
+;; @@
+
 ;; @@
