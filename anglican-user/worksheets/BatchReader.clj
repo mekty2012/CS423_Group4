@@ -7,7 +7,7 @@
 ;; **
 
 ;; @@
-(ns batchreader
+(ns batch-reader
   (:require [gorilla-plot.core :as plot]))
 (use 'nstools.ns)
 (require 'mikera.image.core)
@@ -18,8 +18,15 @@
 ;; @@
 
 ;; @@
-; This implementation is wrong. We need to modify definition of firstarray so that it uses byte array.
-; Current implementation is using char array, where 1 char may not be single byte.
+(defn im-to-mx[image]
+  (let []
+    (map (fn [x] (- (/ x 127.5) 1)) image)
+    ))
+;; @@
+
+;; @@
+; This implementation is wrong. We need to modify definition of firstarray so that it uses byte array. FIXED
+; Current implementation is using char array, where 1 char may not be single byte. FIXED
 (defn sb2ub [b]
   (if (< b 0)
     (+ 256 b)
@@ -33,21 +40,25 @@
       (let [ch (first chunk)
           firstarray (next ch)
           image (mikera.image.core/new-image 32 32)
+          immx [];vectors are easy to concat on back
           pixels (mikera.image.core/get-pixels image)]
-        	(print "hi")
+        	;(print "hi")
             (loop [i 0 j 0]
               (if (= j 32)
                 (do
-                  (mikera.image.core/show image)
+                  (mikera.image.core/show image) (println im-to-mx immx) (println immx)
                   image ;Loop done. return image
                   )
                 (if (= i 32)
                   (recur 0 (+ j 1))
                   (do
-                    (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components 
-                                                             (sb2ub (nth firstarray (+ i (* 32 j)))) 
-                                                             (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j))))) 
+                    (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components
+                                                             (sb2ub (nth firstarray (+ i (* 32 j))))
+                                                             (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j)))))
                                                              (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+                    (conj immx (/ (reduce + 0.0 (list (sb2ub (nth firstarray (+ i (* 32 j))))
+                                                      (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j)))))
+                                                      (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j))))))) 3)) ;; / 계산까지는 잘 됐는데 어째 conj가 안 먹는다.. do에서 왜 이걸 실행을 안시키지
                     (recur (+ i 1) j)
                     )
                   )
@@ -60,9 +71,9 @@
 )
 ;; @@
 
-;; **
-;;; (Example 2)
-;; **
+;; @@
+(Example 1)
+;; @@
 
 ;; @@
 (loop [i 0 j 0]
