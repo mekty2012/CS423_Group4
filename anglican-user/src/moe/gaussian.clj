@@ -14,7 +14,7 @@
             [clojure.core.matrix.operators]
             [clojure.core.matrix.linear]))
 (use 'nstools.ns)
-(ns+ templete
+(ns+ template
   (:like anglican-user.worksheet))
 ;; @@
 

@@ -19,7 +19,7 @@
             [clojure.core.matrix.linear]
             [moe.samplers :refer :all]))
 (use 'nstools.ns)
-(ns+ templete
+(ns+ template
   (:like anglican-user.worksheet))
 ;; @@
 

@@ -19,7 +19,7 @@
 (require 'mikera.image.core)
 (require 'mikera.image.colours)
 (require 'byte-streams)
-(ns+ templete
+(ns+ template
   (:like anglican-user.worksheet))
 ;; @@
 

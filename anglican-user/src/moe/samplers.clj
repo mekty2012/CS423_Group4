@@ -18,21 +18,15 @@
             [clojure.core.matrix.operators]
             [clojure.core.matrix.linear]))
 (use 'nstools.ns)
-(ns+ templete
+(ns+ template
   (:like anglican-user.worksheet))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"}
-;; <=
 
 ;; @@
 (defm cluster-num-sampler [lambda]
   (sample (poisson lambda))
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/cluster-num-sampler</span>","value":"#'templete/cluster-num-sampler"}
-;; <=
 
 ;; @@
 (defm pi-sampler [hyperparameters]
@@ -79,9 +73,6 @@
     )
   )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/pi-sampler</span>","value":"#'templete/pi-sampler"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/mu-sampler</span>","value":"#'templete/mu-sampler"}],"value":"[#'templete/pi-sampler,#'templete/mu-sampler]"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/factor-sampler</span>","value":"#'templete/factor-sampler"}],"value":"[[#'templete/pi-sampler,#'templete/mu-sampler],#'templete/factor-sampler]"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/gmm-sampler</span>","value":"#'templete/gmm-sampler"}],"value":"[[[#'templete/pi-sampler,#'templete/mu-sampler],#'templete/factor-sampler],#'templete/gmm-sampler]"}
-;; <=
 
 ;; @@
 ; Since kernel here, is similar to CNN's single layer, I suggest random initialization method
@@ -96,9 +87,6 @@
   )
   )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/xavier</span>","value":"#'templete/xavier"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/kernel-sampler</span>","value":"#'templete/kernel-sampler"}],"value":"[#'templete/xavier,#'templete/kernel-sampler]"}
-;; <=
 
 ;; @@
 (defm single-moe-sampler [hyperparameters]
@@ -122,9 +110,6 @@
     )
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/single-moe-sampler</span>","value":"#'templete/single-moe-sampler"}
-;; <=
 
 ;; @@
 (defm hierarchical-moe-sampler [hyperparameters]
@@ -165,9 +150,6 @@
     )
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/hierarchical-moe-sampler</span>","value":"#'templete/hierarchical-moe-sampler"}
-;; <=
 
 ;; @@
 

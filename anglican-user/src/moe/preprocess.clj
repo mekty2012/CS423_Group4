@@ -38,9 +38,6 @@
     )
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;user/dropoutted</span>","value":"#'user/dropoutted"}
-;; <=
 
 ;; @@
 ;Return appropriate grayscale value of given rgb

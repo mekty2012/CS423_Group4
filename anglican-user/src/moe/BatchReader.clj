@@ -17,17 +17,11 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"}
-;; <=
 
 ;; @@
 (defn im-to-mx [image]
   (map (fn [x] (- (/ x 127.5) 1)) image))
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/im-to-mx</span>","value":"#'template/im-to-mx"}
-;; <=
 
 ;; @@
 (defn sb2ub [b]
@@ -74,16 +68,13 @@
   )
 )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/sb2ub</span>","value":"#'template/sb2ub"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/Example</span>","value":"#'template/Example"}],"value":"[#'template/sb2ub,#'template/Example]"}
-;; <=
 
 ;; @@
-(defn for-Images [file-name num do-fun]
+(defn for-images [file-name iter-num do-fun]
   "Read file-name, to 32*32 images, and for each image, apply do-fun. It will perform do-fun for n images."
   (let [f (java.io.File. file-name)
 		  st (byte-streams/to-byte-array f)]
-    (loop [chunk (partition 3073 st) n num]
+    (loop [chunk (partition 3073 st) n iter-num]
       (let [ch (first chunk)
             firstarray (next ch)
             image (mikera.image.core/new-image 32 32)
@@ -109,17 +100,7 @@
     )
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/for-Images</span>","value":"#'template/for-Images"}
-;; <=
 
 ;; @@
 (println "batchreader import Success")
 ;; @@
-;; ->
-;;; batchreader import Success
-;;; 
-;; <-
-;; =>
-;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
-;; <=
