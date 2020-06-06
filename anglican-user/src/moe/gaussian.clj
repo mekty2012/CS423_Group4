@@ -98,88 +98,12 @@
 ;; @@
 
 ;; @@
-(with-primitive-procedures [factor-mvn]
-(defquery test-factor-mvn-sample []
-  (let [x (sample (factor-mvn 5 [1 1 1 1 1] [[1 2 3 4 5] [1 1 1 1 1] [3 4 5 6 7] [8 3 4 5 1] [3 4 5 6 1]]))]
-      {:x x}
-    ))
-)
-(with-primitive-procedures [factor-mvn identity-matrix]
-(defquery test-factor-mvn-observe []
-  (let [x (sample (normal 5 1))]
-    (observe (factor-mvn 5 [x x x x x] (identity-matrix 5)) [3 3 3 3 3])
-    (observe (factor-mvn 5 [x (+ x 1) x x x] (identity-matrix 5)) [3 5 3 3 3])
-    (observe (factor-mvn 5 [x x x x x] (identity-matrix 5)) [3 3 3 3 3])
-    (observe (factor-mvn 5 [x x x (+ x 2) x] (identity-matrix 5)) [3 3 3 6 3])
-    {:x x}
-    ))
-)
-;; @@
-
-;; @@
-(def samples-1 (doquery :lmh test-factor-mvn-sample nil))
-
-(def results-1 (map get-result (take 10 (drop 10 samples-1))))
-
-(def samples-2 (doquery :lmh test-factor-mvn-observe nil))
-
-(def results-2  (take 10 (drop 10 samples-2)))
-
-(println results-2)
-;; @@
-
-;; @@
-(with-primitive-procedures [factor-gmm identity-matrix]
-(defquery test-factor-gmm-sample []
-  (let [x (sample
-            (factor-gmm
-              5 (list 0.3 0.7)
-              (list [1 1 1 1 1] [7 7 7 7 7])
-              (list [[1 2 3 4 5] [1 1 1 1 1] [3 4 5 6 7] [8 3 4 5 1] [3 4 5 6.2 1]]
-                    (identity-matrix 5))
-              )
-            )]
-      {:x x}
-    )
-))
-(with-primitive-procedures [factor-gmm identity-matrix]
-(defquery test-factor-gmm-observe []
-  (let [x (sample (normal 3 2))
-        y (sample (normal 7 2))]
-      (observe (factor-gmm
-                 5 (list 0.3 0.7)
-                 (list [x y x x y]
-                       [y x y x y])
-                 (list [[1 2 3 4 5] [1 1 1 1 1] [3 4 5 6 7] [8 3 4 5 1] [3 4 5 6.2 1]]
-                       (identity-matrix 5))
-                 )
-               (list 0 [3 3 3 3 3]))
-    {:x x :y y}
-    ))
-)
-;; @@
-
-;; @@
-(def samples-2 (doquery :lmh test-factor-gmm-observe nil))
-
-(def results-2  (map :result (take 100 (drop 10000 samples-2))))
-
-(println results-2)
-;; @@
-
-;; @@
 (defn eval-gaussian-mixture [x pi mu-vec sigma-vec]
   "This function returns a vector that contains P(z_i = 1|mu, sigma)."
   (map
     (fn [i] (+ (nth (Math/log pi) i) (eval-multi-variable-normal x (nth mu-vec i) (nth sigma-vec i))))
     (range 0 (count pi)))
   )
-;; @@
-
-;; @@
-(def evalmvn-test (eval-multi-variable-normal [1 1 1 -1 3 1 2 3 1 1] [0 0 0 0 0 0 0 0 0 0] (clojure.core.matrix/identity-matrix 10)))
-
-(print evalmvn-test)
 ;; @@
 
 ;; @@
@@ -200,41 +124,5 @@
 ;; @@
 
 ;; @@
-(with-primitive-procedures [row-mean invert shape identity-matrix get-row]
-  (defm gmm [data & [hyperparams]]
-    (println "provided hyperparameters:" hyperparams)
-    (let [[N D] (shape data)
-
-          ;; there are many hyperparameters; we provide defaults
-          K         (:K         hyperparams 10)
-          alpha     (:alpha     hyperparams 1.0)
-          mu-0      (:mu-0      hyperparams (row-mean data))
-          lambda-0  (:lambda-0  hyperparams (identity-matrix D))
-          nu        (:nu        hyperparams (inc D))
-          kappa     (:kappa     hyperparams 1.0)
-
-          ;; sample the latent variables.
-          ;;
-          ;; mu and sigma are per-cluster; ideally we would
-          ;; sample them lazily
-
-          pi (sample (dirichlet (repeat K alpha)))
-          lambda (into [] (map (fn [x] (sample x))
-                               (repeat K (wishart nu lambda-0))))
-          mu (into [] (map
-                        (fn [k]
-                          (sample (eval-multi-variable-normal mu-0
-                                       (invert kappa
-                                               (get lambda k)))))
-                        (range K)))
-          sigma (into [] (map invert lambda))]
-      ;; for each data point, sample z[n] and `observe`
-      (loop [n 0
-             z []]
-        (if (= n N)
-          z
-          (let [row (get-row data n)
-                k (sample (discrete pi))]
-            (observe (eval-multi-variable-normal (get mu k) (get sigma k)) row)
-            (recur (inc n) (conj z k))))))))
+(println "import gaussian success")
 ;; @@

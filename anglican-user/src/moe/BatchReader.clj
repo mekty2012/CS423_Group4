@@ -7,20 +7,27 @@
 ;; **
 
 ;; @@
-(ns moe.BatchReader
-  (:require [gorilla-plot.core :as plot]))
+(ns moe.batchreader
+  (:require [gorilla-plot.core :as plot]
+            [mikera.image.core]
+            [mikera.image.colours]
+            [byte-streams]
+            ))
 (use 'nstools.ns)
-(require 'mikera.image.core)
-(require 'mikera.image.colours)
-(require 'byte-streams)
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"}
+;; <=
 
 ;; @@
 (defn im-to-mx [image]
   (map (fn [x] (- (/ x 127.5) 1)) image))
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/im-to-mx</span>","value":"#'template/im-to-mx"}
+;; <=
 
 ;; @@
 (defn sb2ub [b]
@@ -67,9 +74,12 @@
   )
 )
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/sb2ub</span>","value":"#'template/sb2ub"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/Example</span>","value":"#'template/Example"}],"value":"[#'template/sb2ub,#'template/Example]"}
+;; <=
 
 ;; @@
-(defn forImages [file-name num do-fun]
+(defn for-Images [file-name num do-fun]
   "Read file-name, to 32*32 images, and for each image, apply do-fun. It will perform do-fun for n images."
   (let [f (java.io.File. file-name)
 		  st (byte-streams/to-byte-array f)]
@@ -99,38 +109,17 @@
     )
   )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/for-Images</span>","value":"#'template/for-Images"}
+;; <=
 
 ;; @@
-(forImages "data/cifar-10-batches-bin/data_batch_1.bin" 2 (fn [im] (mikera.image.core/show im)))
+(println "batchreader import Success")
 ;; @@
-
-;; @@
-(loop [i 0 j 0]
-  (if (= j 32)
-      image
-      (if (= i 32)
-        (recur 0 (+ j 1))
-        (do 
-          (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components 255 (+ 7 (* 8 i)) (+ 7 (* 8 j))))
-          (recur (+ i 1) j)
-          )
-        )
-    )
-  )
-
-(mikera.image.core/show image)
-;; @@
-
-;; @@
-(def f (java.io.File. "data/cifar-10-batches-bin/data_batch_1.bin"))
-
-(def st (byte-streams/to-input-stream f))
-
-(def ch (take 1 (byte-streams/convert st (byte-streams/seq-of java.nio.ByteBuffer) {:chunk-size 1024})))
-
-(byte-streams/print-bytes ch)
-;; @@
-
-;; @@
-
-;; @@
+;; ->
+;;; batchreader import Success
+;;; 
+;; <-
+;; =>
+;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
+;; <=
