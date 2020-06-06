@@ -38,27 +38,9 @@
     )
   )
 ;; @@
-
-;; @@
-;Testing dropout
-(def image (mikera.image.core/new-image 32 32))
-
-(loop [i 0 j 0]
-  (if (= j 32)
-      image
-      (if (= i 32)
-        (recur 0 (+ j 1))
-        (do 
-          (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components 255 (+ 7 (* 8 i)) (+ 7 (* 8 j))))
-          (recur (+ i 1) j)
-          )
-        )
-    )
-  )
-(def dropped (dropoutted image 0.5))
-(mikera.image.core/show dropped)
-(mikera.image.core/show image)
-;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;user/dropoutted</span>","value":"#'user/dropoutted"}
+;; <=
 
 ;; @@
 ;Return appropriate grayscale value of given rgb
@@ -91,13 +73,6 @@
 ;; @@
 
 ;; @@
-;Testing grayscale
-
-(def grayed (grayscaled image))
-(mikera.image.core/show grayed)
-;; @@
-
-;; @@
 ;Function to get 2n+1 by 2n+1 image that is centered at ij pixel of original image. 
 (defn nbox [image n i j]
   
@@ -124,19 +99,6 @@
 ;; @@
 
 ;; @@
-;Testing nbox
-
-
-(def sevenbox1616 (nbox image 3 16 16))
-	
-(mikera.image.core/show sevenbox1616)
-
-(def sevenbox00 (nbox image 3 0 0))
-
-(mikera.image.core/show sevenbox00)
-;; @@
-
-;; @@
 (defn im2vec [image n]
   (loop [x (- n 1) y (- n 1) l nil]
     (if (= y -1)
@@ -151,9 +113,5 @@
 ;; @@
 
 ;; @@
-(map mikera.image.colours/components-rgb (im2vec sevenbox00 7))
-;; @@
-
-;; @@
-
+(println "Import preprocess SUCCESS")
 ;; @@

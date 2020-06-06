@@ -21,12 +21,18 @@
 (ns+ templete
   (:like anglican-user.worksheet))
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"}
+;; <=
 
 ;; @@
 (defm cluster-num-sampler [lambda]
   (sample (poisson lambda))
   )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/cluster-num-sampler</span>","value":"#'templete/cluster-num-sampler"}
+;; <=
 
 ;; @@
 (defm pi-sampler [hyperparameters]
@@ -73,14 +79,9 @@
     )
   )
 ;; @@
-
-;; @@
-(defquery test-pi-sampler [n alpha]
-  (pi-sampler {:n n :alpha alpha})
-  )
-
-(def sample-test-pi)
-;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/pi-sampler</span>","value":"#'templete/pi-sampler"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/mu-sampler</span>","value":"#'templete/mu-sampler"}],"value":"[#'templete/pi-sampler,#'templete/mu-sampler]"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/factor-sampler</span>","value":"#'templete/factor-sampler"}],"value":"[[#'templete/pi-sampler,#'templete/mu-sampler],#'templete/factor-sampler]"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/gmm-sampler</span>","value":"#'templete/gmm-sampler"}],"value":"[[[#'templete/pi-sampler,#'templete/mu-sampler],#'templete/factor-sampler],#'templete/gmm-sampler]"}
+;; <=
 
 ;; @@
 ; Since kernel here, is similar to CNN's single layer, I suggest random initialization method
@@ -95,6 +96,9 @@
   )
   )
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;templete/xavier</span>","value":"#'templete/xavier"},{"type":"html","content":"<span class='clj-var'>#&#x27;templete/kernel-sampler</span>","value":"#'templete/kernel-sampler"}],"value":"[#'templete/xavier,#'templete/kernel-sampler]"}
+;; <=
 
 ;; @@
 (defm single-moe-sampler [hyperparameters]
@@ -118,6 +122,9 @@
     )
   )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/single-moe-sampler</span>","value":"#'templete/single-moe-sampler"}
+;; <=
 
 ;; @@
 (defm hierarchical-moe-sampler [hyperparameters]
@@ -158,36 +165,9 @@
     )
   )
 ;; @@
-
-;; @@
-(defquery test-single-moe-sampler [n lambda alpha mu-mu mu-sigma factor-mu factor-sigma]
-	(single-moe-sampler {:n n :lambda lambda :alpha alpha :mu-mu mu-mu :mu-sigma mu-sigma :factor-mu factor-mu :factor-sigma factor-sigma})
-  )
-;; @@
-
-;; @@
-(def sample-sing (doquery :lmh test-single-moe-sampler [5 3 1.5 0 1 1 1]))
-
-(def results-sing (take 10 sample-sing))
-
-
-(print results-sing)
-;; @@
-
-;; @@
-(defquery test-hierarchical-moe-sampler [n p lambda alpha mu-mu mu-sigma factor-mu factor-sigma]
-  (hierarchical-moe-sampler {:n n :p p :lambda lambda :alpha alpha :mu-mu mu-mu :mu-sigma mu-sigma :factor-mu factor-mu :factor-sigma factor-sigma})
-  )
-;; @@
-
-;; @@
-(def sample-hier (doquery :lmh test-hierarchical-moe-sampler [5 0.5 3 1.5 0 1 1 1]))
-
-(def results-hier (take 10 sample-hier))
-
-
-(print results-hier)
-;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;templete/hierarchical-moe-sampler</span>","value":"#'templete/hierarchical-moe-sampler"}
+;; <=
 
 ;; @@
 
