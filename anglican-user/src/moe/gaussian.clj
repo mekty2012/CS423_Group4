@@ -122,7 +122,3 @@
   (clojure.core.matrix/get-row matrix)
   )
 ;; @@
-
-;; @@
-(println "import gaussian success")
-;; @@
