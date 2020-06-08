@@ -24,9 +24,6 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[nil,nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[nil,nil],nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[[nil,nil],nil],nil],nil],nil]"}
-;; <=
 
 ;; @@
 (defn pixel2gray [p]
@@ -38,9 +35,6 @@
   (- (/ p 127.5) 1)
   )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/pixel2gray</span>","value":"#'template/pixel2gray"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/rgb2uniform</span>","value":"#'template/rgb2uniform"}],"value":"[#'template/pixel2gray,#'template/rgb2uniform]"}
-;; <=
 
 ;; @@
 (defn max-index [v] 
@@ -55,17 +49,6 @@
             (recur maximum max-index (inc i))))
         max-index))))
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/max-index</span>","value":"#'template/max-index"}
-;; <=
-
-;; @@
-(def test (clojure.core.matrix/add [1 2 3]  [1 4 3] [7 8 9]))
-test
-;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/test</span>","value":"#'template/test"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-long'>9</span>","value":"9"},{"type":"html","content":"<span class='clj-long'>14</span>","value":"14"},{"type":"html","content":"<span class='clj-long'>15</span>","value":"15"}],"value":"[9 14 15]"}],"value":"[#'template/test,[9 14 15]]"}
-;; <=
 
 ;; @@
 ; TODO
@@ -74,7 +57,7 @@ test
   "Returns value applying kernel to vect. In fact, it is dot product."
   )
 
-(defn moe-feed-best [model vect]
+(defn moe-feed-best-single [model vect]
   "Performs moe-feed, where gating model leads to cluster with highest probability"
   (let [num_cluster (:num_cluster model)
         pi (:pi model)
@@ -89,7 +72,7 @@ test
     	
   
 
-(defn moe-feed-prob [model vect]
+(defn moe-feed-prob-single [model vect]
   "Performs moe-feed, where gating model leads to cluster probabilistically. It does not need to be sample argument."
   (let [num_cluster (:num_cluster model)
         pi (:pi model)
@@ -102,7 +85,7 @@ test
   )
  )
 
-(defn moe-feed-weight [model vect]
+(defn moe-feed-weight-single [model vect]
   "Performs moe-feed, where gating model performs weighted sum over all children."
   (let [num_cluster (:num_cluster model)
         pi (:pi model)
@@ -118,9 +101,6 @@ test
   )
  )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/kernel-compute</span>","value":"#'template/kernel-compute"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-best</span>","value":"#'template/moe-feed-best"}],"value":"[#'template/kernel-compute,#'template/moe-feed-best]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-prob</span>","value":"#'template/moe-feed-prob"}],"value":"[[#'template/kernel-compute,#'template/moe-feed-best],#'template/moe-feed-prob]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-weight</span>","value":"#'template/moe-feed-weight"}],"value":"[[[#'template/kernel-compute,#'template/moe-feed-best],#'template/moe-feed-prob],#'template/moe-feed-weight]"}
-;; <=
 
 ;; @@
 (defquery SingleLearning [file-name iter-num hyperparams]
