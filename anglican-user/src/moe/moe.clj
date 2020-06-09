@@ -51,12 +51,20 @@
 ;; @@
 
 ;; @@
+(defn normalize [vector]
+  (let [sum (reduce + 0.0 vector)]
+    (map (fn [x] (/ x sum)) vector))
+  )
+;; @@
+
+;; @@
 ; TODO
 
 (defn kernel-compute [kernel vect]
   "Returns value applying kernel to vect. In fact, it is dot product."
   )
 
+;The below 3 methods needs testing
 (defn moe-feed-best-single [model vect]
   "Performs moe-feed, where gating model leads to cluster with highest probability"
   (let [num_cluster (:num_cluster model)
@@ -72,15 +80,15 @@
     	
   
 
-(defn moe-feed-prob-single [model vect]
+(defm moe-feed-prob-single [model vect]
   "Performs moe-feed, where gating model leads to cluster probabilistically. It does not need to be sample argument."
   (let [num_cluster (:num_cluster model)
         pi (:pi model)
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
         kernel_vec (:kernel_vec model)
-        prob_cluster (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec)))
-        index (categorical prob_cluster)]
+        prob_cluster  (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec)))
+        index (sample* (discrete prob_cluster))]
     (kernel-compute (nth kernel_vec index) vect)
   )
  )
@@ -91,15 +99,30 @@
         pi (:pi model)
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
+        shape (clojure.core.matrix/shape (first factor_vec))
         kernel_vec (:kernel_vec model)
-        prob-cluster (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec)))
+        prob-cluster (normalize (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec))))
         kernel-collection (map (fn [x] (kernel-compute x vect)) kernel_vec)]
-    (reduce clojure.core.matrix/add 
+    (reduce clojure.core.matrix/add (zero-array shape) 
             (map (fn [vec p] 
                    (map (fn [x] (* p x)) vec)
                    ) kernel-collection prob-cluster))
   )
  )
+
+;For the hierarchical case proabbly the same but with recusion at certain steps.
+
+(defn moe-feed-best-hierarchical [model vect]
+
+  )
+
+(defn moe-feed-prob-hierarchical [model vect]
+  
+  )
+
+(defn moe-feed-weight-hierarchical [model vect]
+  
+  )
 ;; @@
 
 ;; @@
@@ -158,8 +181,4 @@
          ))
     )
   )
-;; @@
-
-;; @@
-
 ;; @@
