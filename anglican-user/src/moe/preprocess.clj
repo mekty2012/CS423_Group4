@@ -2,7 +2,7 @@
 
 ;; **
 ;;; # Preprocessing
-;;; 
+;;;
 ;;; This is the clojure file that contains functions needed to preprocess the CIFAR 10 images. Completed functions are dropout, grayscale, and nbox
 ;; **
 
@@ -29,7 +29,7 @@
             (if (< (rand) p)
               (mikera.image.core/set-pixel ret-image x y (mikera.image.colours/rgb-from-components 0 0 0)) ;Below threshold. Drop pixel
               (mikera.image.core/set-pixel ret-image x y (mikera.image.core/get-pixel image x y)) ;Else keep pixel
-              ) 
+              )
             (recur (+ x 1) y)
             )
           )
@@ -42,7 +42,7 @@
 ;; @@
 ;Return appropriate grayscale value of given rgb
 (defn togray [rgb]
-  (let [sum (+ (nth rgb 0) (+ (nth rgb 1) (nth rgb 2)))]    
+  (let [sum (+ (nth rgb 0) (+ (nth rgb 1) (nth rgb 2)))]
     (int (/ sum 3))
     )
   )
@@ -70,9 +70,9 @@
 ;; @@
 
 ;; @@
-;Function to get 2n+1 by 2n+1 image that is centered at ij pixel of original image. 
+;Function to get 2n+1 by 2n+1 image that is centered at ij pixel of original image.
 (defn nbox [image n i j]
-  
+
   (let [box (mikera.image.core/new-image (+ (* 2 n) 1) (+ (* 2 n) 1))]
     (loop [x (- 0 n) y (- 0 n)]
     	(if (= y (+ 1 n))
@@ -82,13 +82,13 @@
               (do
               (if (or (< (+ i x) 0) (< (+ j y) 0) (> (+ i x) 31) (> (+ j y ) 31))
                     (mikera.image.core/set-pixel box (+ x n) (+ y n)(mikera.image.colours/rgb-from-components 0 0 0));If out of bound black pixel in new image
-                (let [pixelcolor (mikera.image.core/get-pixel image (+ i x) (+ j y))] ;Else get rgb and set into image's pixel                
+                (let [pixelcolor (mikera.image.core/get-pixel image (+ i x) (+ j y))] ;Else get rgb and set into image's pixel
 
                     (mikera.image.core/set-pixel box (+ x n) (+ y n) pixelcolor)
                   )
                 )
           	(recur (+ x 1 ) y))
-          
+
           )
     	)
     )
