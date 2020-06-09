@@ -79,20 +79,20 @@
             box ;Loop done. Return new image
     		(if (= x (+ 1 n))
               (recur (- 0 n) (+ y 1)) ;One column done, go to next
-    		(do
-              (if (or (< (+ i x) 0) (< (+ j y) 0) (> (+ i x) 31) (> (+ j y ) 31)) ;Check for out of bound in given 32 by 32 image			
+              (do
+              (if (or (< (+ i x) 0) (< (+ j y) 0) (> (+ i x) 31) (> (+ j y ) 31))
                     (mikera.image.core/set-pixel box (+ x n) (+ y n)(mikera.image.colours/rgb-from-components 0 0 0));If out of bound black pixel in new image
-                (let [pixelcolor (mikera.image.core/get-pixel image (+ i x) (+ j y))] ;Else get rgb and set into image's pixel                  
+                (let [pixelcolor (mikera.image.core/get-pixel image (+ i x) (+ j y))] ;Else get rgb and set into image's pixel                
+
                     (mikera.image.core/set-pixel box (+ x n) (+ y n) pixelcolor)
                   )
                 )
-              (recur (+ x 1 ) y) ;Pixel done. Go to right pixel
-              )
-          	)
+          	(recur (+ x 1 ) y))
+          
           )
     	)
     )
-  )
+  ))
 ;; @@
 
 ;; @@
@@ -107,4 +107,8 @@
       )
     )
   )
+;; @@
+
+;; @@
+
 ;; @@

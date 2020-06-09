@@ -249,7 +249,9 @@
              )
            
            )
-         ))
+         )
+      )
+    model
     )
   )
   )
@@ -265,9 +267,17 @@
          :factor-mu 0
          :factor-sigma 1})
 
-(def sample (doquery :lmh SingleLearning ["data/cifar-10-batchges-bin/data_batch_1.bin" 10 hyperparams]))
+(def sample (doquery :plmh SingleLearning ["data/cifar-10-batches-bin/data_batch_1.bin" 3 hyperparams]))
 
 (def results (take 1 sample))
+
+results
+;; @@
+
+;; @@
+(def only-result {:result results})
+
+only-result
 ;; @@
 
 ;; @@
