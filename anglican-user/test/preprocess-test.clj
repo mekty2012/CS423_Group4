@@ -7,7 +7,7 @@
 ;; **
 
 ;; @@
-(ns moe.preprocess
+(ns moe.preprocess; shouldn't it have a different name?
   (:require [gorilla-plot.core :as plot]
             [moe.preprocess :refer :all]))
 (use 'nstools.ns)
