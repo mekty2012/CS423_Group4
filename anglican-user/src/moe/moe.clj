@@ -2,8 +2,7 @@
 
 ;; **
 ;;; #MoE
-;;; The aim is to compare three gating models.
-;;; This file has gating functions and success criteria
+;;; This is MoE
 ;; **
 
 ;; @@
@@ -38,17 +37,21 @@
 ;; @@
 
 ;; @@
-(defn max-index [v]
+(defn max-index [v] 
   (let [length (count v)]
-    (loop [maximum (v 0)
+    (loop [maximum (nth v 0)
            max-index 0
            i 1]
       (if (< i length)
-        (let [value (v i)]
+        (let [value (nth v i)]
           (if (> value maximum)
             (recur value i (inc i))
             (recur maximum max-index (inc i))))
         max-index))))
+;; @@
+
+;; @@
+(max-index [1 2 3 4])
 ;; @@
 
 ;; @@
@@ -59,7 +62,7 @@
 ;; @@
 
 ;; @@
-(exp 2)
+(clojure.core.matrix/mmul )
 ;; @@
 
 ;; @@
@@ -67,6 +70,7 @@
 
 (defn kernel-compute [kernel vect]
   "Returns value applying kernel to vect. In fact, it is dot product."
+  (clojure.core.matrix/mmul kernel vect)
   )
 
 ;The below 3 methods needs testing
@@ -82,8 +86,8 @@
     (kernel-compute (nth kernel_vec index) vect)
     )
   )
-
-
+    	
+  
 
 (defm moe-feed-prob-single [model vect]
   "Performs moe-feed, where gating model leads to cluster probabilistically. It does not need to be sample argument."
@@ -108,8 +112,8 @@
         kernel_vec (:kernel_vec model)
         prob-cluster (normalize (fn [x] (exp x)) (eval-gaussian-mixture vect pi mu_vec factor_vec))
         kernel-collection (map (fn [x] (kernel-compute x vect)) kernel_vec)]
-    (reduce clojure.core.matrix/add (clojure.core.matrix/zero-array shape)
-            (map (fn [vec p]
+    (reduce clojure.core.matrix/add (clojure.core.matrix/zero-array shape) 
+            (map (fn [vec p] 
                    (map (fn [x] (* p x)) vec)
                    ) kernel-collection prob-cluster))
   )
@@ -161,8 +165,8 @@
         child_vec (:child_vec model)
         prob-cluster (normalize (fn [x] (exp x)) (eval-gaussian-mixture vect pi mu_vec factor_vec))
         kernel-collection (map (fn [x] (if (= (nth ischild_vec x) 1) (moe-feed-weight-hierarchical (nth child_vec x) vect) (kernel-compute x vect))) child_vec)]
-    (reduce clojure.core.matrix/add (clojure.core.matrix/zero-array shape)
-            (map (fn [vec p]
+    (reduce clojure.core.matrix/add (clojure.core.matrix/zero-array shape) 
+            (map (fn [vec p] 
                    (map (fn [x] (* p x)) vec)
                    ) kernel-collection prob-cluster))
   )
@@ -216,7 +220,7 @@
                     )
                   )
                 )
-              )
+              ) 
               (when (> n 1) (recur (next chunk) (- n 1)))
         )
       )
@@ -229,8 +233,8 @@
 (defn get-pixel [im x y]
   (mikera.image.core/get-pixel im x y))
 
-(with-primitive-procedures [dropoutted nbox im2vec moe-feed-best-single pixel2gray rgb2uniform get-pixel]
-(defquery SingleLearning [file-name iter-num hyperparams ]
+(with-primitive-procedures [dropoutted nbox im2vec moe-feed-best-single pixel2gray rgb2uniform get-pixel shape]
+(defquery SingleLearning [file-name iter-num hyperparams]
   (let [model (single-moe-sampler hyperparams)]
     (for-images-m file-name iter-num
        (fn [im]
@@ -241,8 +245,8 @@
              (if (= x 32)
                (recur 0 (inc y))
                (do
-                 (let [box (nbox image 3 x y) ; need to do nbox for every pixels? or just (nbox image (+ 2 (* 5 i)) (+ 2 (* 5 j))) for 0~6?
-                       box-vector (im2vec box)
+                 (let [box (nbox im 3 x y)
+                       box-vector (im2vec box 7)
                        gray-vector (map pixel2gray box-vector)
                        uniform-vector (map rgb2uniform gray-vector)
                        ret (moe-feed-best-single model uniform-vector)]
@@ -251,13 +255,13 @@
                  )
                )
              )
-
+           
            )
          ))
     )
   )
   )
-
+ 
 ;; @@
 
 ;; @@
@@ -271,7 +275,7 @@
 
 (def sample (doquery :lmh SingleLearning ["data/cifar-10-batches-bin/data_batch_1.bin" 10 hyperparams]))
 
-(def results (take 100 sample))
+(def results (take 1 sample))
 ;; @@
 
 ;; @@
@@ -296,14 +300,9 @@
                  )
                )
              )
-
+           
            )
          ))
     )
-  );maybe print the different of weights before and after observation so can check if the algorithm is estimating well?
-;when use factor-gmm?
-;; @@
-
-;; @@
-
+  )
 ;; @@
