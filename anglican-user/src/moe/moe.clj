@@ -110,19 +110,59 @@
   )
  )
 
-;For the hierarchical case proabbly the same but with recusion at certain steps.
+;For the hierarchical case probably the same but with recusion at certain steps.
 
 (defn moe-feed-best-hierarchical [model vect]
-
+  (let [num_cluster (:num_cluster model)
+        pi (:pi model)
+        mu_vec (:mu_vec model)
+        factor_vec (:factor_vec model)
+        ischild_vec (:ischild_vec model)
+        child_vec (:child_vec model)
+        prob_cluster (eval-gaussian-mixture vect pi mu_vec factor_vec)
+        index (max-index prob_cluster)]
+    (if (= (nth ischild_vec index) 1)
+      (moe-feed-best-hierarchical (nth child_vec index) vect)
+      (kernel-compute (nth child_vec index) vect)
+      )
+    )
   )
 
-(defn moe-feed-prob-hierarchical [model vect]
-  
+(defm moe-feed-prob-hierarchical [model vect]
+  "Performs moe-feed, where gating model leads to cluster probabilistically. It does not need to be sample argument."
+  (let [num_cluster (:num_cluster model)
+        pi (:pi model)
+        mu_vec (:mu_vec model)
+        factor_vec (:factor_vec model)
+        ischild_vec (:ischild_vec model)
+        child_vec (:child_vec model)
+        prob_cluster  (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec)))
+        index (sample* (discrete prob_cluster))]
+    (if (= (nth ischild_vec index) 1)
+      (moe-feed-best-hierarchical (nth child_vec index) vect)
+      (kernel-compute (nth child_vec index) vect)
+      )
   )
+ )
 
+;not yet
 (defn moe-feed-weight-hierarchical [model vect]
-  
+  "Performs moe-feed, where gating model performs weighted sum over all children."
+  (let [num_cluster (:num_cluster model)
+        pi (:pi model)
+        mu_vec (:mu_vec model)
+        factor_vec (:factor_vec model)
+        shape (clojure.core.matrix/shape (first factor_vec))
+        ischild_vec (:ischild_vec model)
+        child_vec (:child_vec model)
+        prob-cluster (normalize (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec))))
+        kernel-collection (map (fn [x] (if (= (nth ischild_vec x) 1) () (kernel-compute x vect))) child_vec)]
+    (reduce clojure.core.matrix/add (zero-array shape) 
+            (map (fn [vec p] 
+                   (map (fn [x] (* p x)) vec)
+                   ) kernel-collection prob-cluster))
   )
+ )
 ;; @@
 
 ;; @@
