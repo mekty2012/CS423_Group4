@@ -58,6 +58,10 @@
 ;; @@
 
 ;; @@
+(exp 2)
+;; @@
+
+;; @@
 ; TODO : There's no zero-array function
 
 (defn kernel-compute [kernel vect]
@@ -87,7 +91,7 @@
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
         kernel_vec (:kernel_vec model)
-        prob_cluster  (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec)))
+        prob_cluster  (map (fn [x] (exp x)) (eval-gaussian-mixture vect pi mu_vec factor_vec))
         index (sample* (discrete prob_cluster))]
     (kernel-compute (nth kernel_vec index) vect)
   )
@@ -101,9 +105,9 @@
         factor_vec (:factor_vec model)
         shape (clojure.core.matrix/shape (first factor_vec))
         kernel_vec (:kernel_vec model)
-        prob-cluster (normalize (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec))))
+        prob-cluster (normalize (fn [x] (exp x)) (eval-gaussian-mixture vect pi mu_vec factor_vec))
         kernel-collection (map (fn [x] (kernel-compute x vect)) kernel_vec)]
-    (reduce clojure.core.matrix/add (zero-array shape) 
+    (reduce clojure.core.matrix/add (clojure.core.matrix/zero-array shape) 
             (map (fn [vec p] 
                    (map (fn [x] (* p x)) vec)
                    ) kernel-collection prob-cluster))
@@ -136,10 +140,10 @@
         factor_vec (:factor_vec model)
         ischild_vec (:ischild_vec model)
         child_vec (:child_vec model)
-        prob_cluster  (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec)))
+        prob_cluster  (map (fn [x] (exp x)) (eval-gaussian-mixture vect pi mu_vec factor_vec))
         index (sample* (discrete prob_cluster))]
     (if (= (nth ischild_vec index) 1)
-      (moe-feed-best-hierarchical (nth child_vec index) vect)
+      (moe-feed-prob-hierarchical (nth child_vec index) vect)
       (kernel-compute (nth child_vec index) vect)
       )
   )
@@ -154,9 +158,9 @@
         shape (clojure.core.matrix/shape (first factor_vec))
         ischild_vec (:ischild_vec model)
         child_vec (:child_vec model)
-        prob-cluster (normalize (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec))))
+        prob-cluster (normalize (fn [x] (exp x)) (eval-gaussian-mixture vect pi mu_vec factor_vec))
         kernel-collection (map (fn [x] (if (= (nth ischild_vec x) 1) (moe-feed-weight-hierarchical (nth child_vec x) vect) (kernel-compute x vect))) child_vec)]
-    (reduce clojure.core.matrix/add (zero-array shape) 
+    (reduce clojure.core.matrix/add (clojure.core.matrix/zero-array shape) 
             (map (fn [vec p] 
                    (map (fn [x] (* p x)) vec)
                    ) kernel-collection prob-cluster))
@@ -165,9 +169,69 @@
 ;; @@
 
 ;; @@
-(defquery SingleLearning [file-name iter-num hyperparams]
+(defn get-file [file-name]
+  (java.io.File. file-name))
+
+(defn new-image [a b]
+  (mikera.image.core/new-image a b)
+  )
+
+(defn to-byte-array [f]
+  (byte-streams/to-byte-array f))
+
+(defn get-pixels [im]
+  (mikera.image.core/get-pixels im))
+
+(defn set-pixel [im x y rgbcomponent]
+  (mikera.image.core/set-pixel im x y rgbcomponent))
+
+(defn rgb-from-components [x y z]
+  (mikera.image.colours/rgb-from-components x y z))
+;; @@
+
+;; @@
+(with-primitive-procedures [get-file new-image to-byte-array get-pixels set-pixel rgb-from-components sb2ub]
+(defm for-images-m
+  [file-name iter-num do-fun]
+  "Read file-name, to 32*32 images, and for each image, apply do-fun. It will perform do-fun for n images."
+  (let [f (get-file file-name)
+		  st (to-byte-array f)]
+    (loop [chunk (partition 3073 st) n iter-num]
+      (let [ch (first chunk)
+            firstarray (next ch)
+            image (new-image 32 32)
+            pixels (get-pixels image)]
+        	(loop [i 0 j 0]
+              (if (= j 32)
+                (do-fun image)
+                (if (= i 32)
+                  (recur 0 (+ j 1))
+                  (do
+                    (set-pixel image i j (rgb-from-components
+                                                             (sb2ub (nth firstarray (+ i (* 32 j))))
+                                                             (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j)))))
+                                                             (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+                    (recur (+ i 1) j)
+                    )
+                  )
+                )
+              ) 
+              (when (> n 1) (recur (next chunk) (- n 1)))
+        )
+      )
+    )
+  )
+  )
+;; @@
+
+;; @@
+(defn get-pixel [im x y]
+  (mikera.image.core/get-pixel im x y))
+
+(with-primitive-procedures [dropoutted nbox im2vec moe-feed-best-single pixel2gray rgb2uniform get-pixel]
+(defquery SingleLearning [file-name iter-num hyperparams ]
   (let [model (single-moe-sampler hyperparams)]
-    (for-images file-name iter-num
+    (for-images-m file-name iter-num
        (fn [im]
          (let [dropped (dropoutted im 0.3)])
          (loop [x 0 y 0]
@@ -176,12 +240,12 @@
              (if (= x 32)
                (recur 0 (inc y))
                (do
-                 (let [box (nbox image 3 x y)
-                       box-vector (im2vec box)
+                 (let [box (nbox im 3 x y)
+                       box-vector (im2vec box 7)
                        gray-vector (map pixel2gray box-vector)
                        uniform-vector (map rgb2uniform gray-vector)
-                       ret (moe-feed model uniform-vector)]
-                   (observe (normal (rgb2uniform (mikera.image.core/get-pixel im x y)) 1) ret))
+                       ret (moe-feed-best-single model uniform-vector)]
+                   (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret))
                  (recur (inc x) y)
                  )
                )
@@ -191,6 +255,22 @@
          ))
     )
   )
+  )
+ 
+;; @@
+
+;; @@
+(def hyperparams {:n 49
+         :lambda 3
+         :alpha 1
+         :mu-mu 0
+         :mu-sigma 1
+         :factor-mu 0
+         :factor-sigma 1})
+
+(def sample (doquery :lmh SingleLearning ["data/cifar-10-batches-bin/data_batch_1.bin" 10 hyperparams]))
+
+(def results (take 100 sample))
 ;; @@
 
 ;; @@
@@ -205,7 +285,7 @@
              (if (= x 32)
                (recur 0 (inc y))
                (do
-                 (let [box (nbox image 3 x y)
+                 (let [box (nbox im 3 x y)
                        box-vector (im2vec box)
                        gray-vector (map pixel2gray box-vector)
                        uniform-vector (map rgb2uniform gray-vector)
