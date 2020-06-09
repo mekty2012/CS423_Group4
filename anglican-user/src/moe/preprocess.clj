@@ -108,3 +108,28 @@
     )
   )
 ;; @@
+
+;; @@
+(defn vec2im [vec n]
+  (let [ret-image (mikera.image.core/new-image n n)]
+    (loop [x 0 y 0]
+      (if (= y n)
+        ret-image ;Loop done. Return new image.
+        (if (= x n)
+          (recur 0 (+ y 1))
+          (do (mikera.image.core/set-pixel ret-image x y (mikera.image.colours/rgb-from-components (+ 1 (* 127.5 (nth vec (+ x (* y n))))) (+ 1 (* 127.5 (nth vec (+ x (* y n))))) (+ 1 (* 127.5 (nth vec (+ x (* y n)))))))
+            (recur (+ x 1) y))
+            )
+          )
+        ) (mikera.image.core/show ret-image)
+      )
+    )
+;; @@
+
+;; @@
+(vec2im [0 0 0 0] 2)
+;; @@
+
+;; @@
+
+;; @@
