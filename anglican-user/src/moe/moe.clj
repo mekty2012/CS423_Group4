@@ -51,18 +51,10 @@
 ;; @@
 
 ;; @@
-(max-index [1 2 3 4])
-;; @@
-
-;; @@
 (defn normalize [vector]
   (let [sum (reduce + 0.0 vector)]
     (map (fn [x] (/ x sum)) vector))
   )
-;; @@
-
-;; @@
-(clojure.core.matrix/mmul )
 ;; @@
 
 ;; @@
@@ -273,7 +265,7 @@
          :factor-mu 0
          :factor-sigma 1})
 
-(def sample (doquery :lmh SingleLearning ["data/cifar-10-batches-bin/data_batch_1.bin" 10 hyperparams]))
+(def sample (doquery :lmh SingleLearning ["data/cigfar-10-batches-bin/data_batch_1.bin" 10 hyperparams]))
 
 (def results (take 1 sample))
 ;; @@

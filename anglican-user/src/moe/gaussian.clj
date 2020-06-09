@@ -101,7 +101,7 @@
 (defn eval-gaussian-mixture [x pi mu-vec sigma-vec]
   "This function returns a vector that contains P(z_i = 1|mu, sigma)."
   (map
-    (fn [i] (+ (nth (Math/log pi) i) (eval-multi-variable-normal x (nth mu-vec i) (nth sigma-vec i))))
+    (fn [i] (+ (Math/log (nth pi i)) (eval-multi-variable-normal x (nth mu-vec i) (nth sigma-vec i))))
     (range 0 (count pi)))
   )
 ;; @@
