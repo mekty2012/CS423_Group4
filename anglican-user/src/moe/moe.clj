@@ -58,7 +58,7 @@
 ;; @@
 
 ;; @@
-; TODO
+; TODO : There's no zero-array function
 
 (defn kernel-compute [kernel vect]
   "Returns value applying kernel to vect. In fact, it is dot product."
@@ -145,7 +145,6 @@
   )
  )
 
-;not yet
 (defn moe-feed-weight-hierarchical [model vect]
   "Performs moe-feed, where gating model performs weighted sum over all children."
   (let [num_cluster (:num_cluster model)
@@ -156,7 +155,7 @@
         ischild_vec (:ischild_vec model)
         child_vec (:child_vec model)
         prob-cluster (normalize (map (fn [x] (Math/exp x) (eval-gaussian-mixture vect pi mu_vec factor_vec))))
-        kernel-collection (map (fn [x] (if (= (nth ischild_vec x) 1) () (kernel-compute x vect))) child_vec)]
+        kernel-collection (map (fn [x] (if (= (nth ischild_vec x) 1) (moe-feed-weight-hierarchical (nth child_vec x) vect) (kernel-compute x vect))) child_vec)]
     (reduce clojure.core.matrix/add (zero-array shape) 
             (map (fn [vec p] 
                    (map (fn [x] (* p x)) vec)
