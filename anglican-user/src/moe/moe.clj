@@ -265,7 +265,7 @@
          :factor-mu 0
          :factor-sigma 1})
 
-(def sample (doquery :lmh SingleLearning ["data/cigfar-10-batches-bin/data_batch_1.bin" 10 hyperparams]))
+(def sample (doquery :lmh SingleLearning ["data/cifar-10-batchges-bin/data_batch_1.bin" 10 hyperparams]))
 
 (def results (take 1 sample))
 ;; @@
@@ -286,7 +286,7 @@
                        box-vector (im2vec box)
                        gray-vector (map pixel2gray box-vector)
                        uniform-vector (map rgb2uniform gray-vector)
-                       ret (moe-feed model uniform-vector)]
+                       ret (moe-feed-hiercarchical-best model uniform-vector)]
                    (observe (normal (rgb2uniform (mikera.image.core/get-pixel im x y)) 1) ret))
                  (recur (inc x) y)
                  )
@@ -297,4 +297,8 @@
          ))
     )
   )
+;; @@
+
+;; @@
+
 ;; @@
