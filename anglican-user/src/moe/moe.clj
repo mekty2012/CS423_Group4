@@ -2,7 +2,8 @@
 
 ;; **
 ;;; #MoE
-;;; This is MoE
+;;; The aim is to compare three gating models.
+;;; This file has gating functions and success criteria
 ;; **
 
 ;; @@
@@ -176,7 +177,7 @@
              (if (= x 32)
                (recur 0 (inc y))
                (do
-                 (let [box (nbox image 3 x y)
+                 (let [box (nbox image 3 x y) ; need to do nbox for every pixels? or just (nbox image (+ 2 (* 5 i)) (+ 2 (* 5 j))) for 0~6?
                        box-vector (im2vec box)
                        gray-vector (map pixel2gray box-vector)
                        uniform-vector (map rgb2uniform gray-vector)
@@ -219,5 +220,10 @@
            )
          ))
     )
-  )
+  );maybe print the different of weights before and after observation so can check if the algorithm is estimating well?
+;when use factor-gmm?
+;; @@
+
+;; @@
+
 ;; @@
