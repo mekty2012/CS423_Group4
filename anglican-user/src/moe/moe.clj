@@ -37,7 +37,7 @@
 ;; @@
 
 ;; @@
-(defn max-index [v] 
+(defn max-index [v]
   (let [length (count v)]
     (loop [maximum (nth v 0)
            max-index 0
@@ -81,14 +81,14 @@
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
         kernel_vec (:kernel_vec model)
-        prob_cluster (map (fn [index] 
+        prob_cluster (map (fn [index]
                             (observe* (factor-gmm n pi mu_vec factor_vec) [index vect])) (range 0 num_cluster))
         index (max-index prob_cluster)]
     (kernel-compute (nth kernel_vec index) vect)
     )
   )
-)    	
-  
+)
+
 (with-primitive-procedures [factor-gmm kernel-compute]
 (defm moe-feed-prob-single [n model vect]
   "Performs moe-feed, where gating model leads to cluster probabilistically. It does not need to be sample argument."
@@ -97,9 +97,9 @@
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
         kernel_vec (:kernel_vec model)
-        prob_cluster (normalize 
-                       (map 
-                         (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect]))) 
+        prob_cluster (normalize
+                       (map
+                         (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect])))
                          (range 0 num_cluster)))
         index (sample* (discrete prob_cluster))]
     (kernel-compute (nth kernel_vec index) vect)
@@ -117,13 +117,13 @@
         factor_vec (:factor_vec model)
         shape (shape (first factor_vec))
         kernel_vec (:kernel_vec model)
-        prob_cluster (normalize 
-                       (map 
-                         (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect]))) 
+        prob_cluster (normalize
+                       (map
+                         (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect])))
                          (range 0 num_cluster)))
         kernel-collection (map (fn [x] (kernel-compute x vect)) kernel_vec)]
-    (reduce add (zero-array shape) 
-            (map (fn [vec p] 
+    (reduce add (zero-array shape)
+            (map (fn [vec p]
                    (map (fn [x] (* p x)) vec)
                    ) kernel-collection prob_cluster))
   )
@@ -140,7 +140,7 @@
         factor_vec (:factor_vec model)
         ischild_vec (:ischild_vec model)
         child_vec (:child_vec model)
-        prob_cluster (map (fn [index] 
+        prob_cluster (map (fn [index]
                             (observe* (factor-gmm n pi mu_vec factor_vec) [index vect])) (range 0 num_cluster))
         index (max-index prob_cluster)]
     (if (= (nth ischild_vec index) 1)
@@ -160,8 +160,8 @@
         factor_vec (:factor_vec model)
         ischild_vec (:ischild_vec model)
         child_vec (:child_vec model)
-        prob_cluster  (normalize (map 
-                                   (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect]))) 
+        prob_cluster  (normalize (map
+                                   (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect])))
                                    (range 0 num_cluster)))
         index (sample* (discrete prob_cluster))]
     (if (= (nth ischild_vec index) 1)
@@ -181,19 +181,19 @@
         shape (shape (first factor_vec))
         ischild_vec (:ischild_vec model)
         child_vec (:child_vec model)
-        prob_cluster (normalize 
-                       (map 
-                         (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect]))) 
+        prob_cluster (normalize
+                       (map
+                         (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect])))
                          (range 0 num_cluster)))
         index (sample* (discrete prob_cluster))
-        kernel-collection (map 
-                            (fn [x] 
-                              (if (= (nth ischild_vec x) 1) 
-                                (moe-feed-weight-hierarchical n (nth child_vec x) vect) 
-                                (kernel-compute x vect))) 
+        kernel-collection (map
+                            (fn [x]
+                              (if (= (nth ischild_vec x) 1)
+                                (moe-feed-weight-hierarchical n (nth child_vec x) vect)
+                                (kernel-compute x vect)))
                             child_vec)]
-    (reduce add (zero-array shape) 
-            (map (fn [vec p] 
+    (reduce add (zero-array shape)
+            (map (fn [vec p]
                    (map (fn [x] (* p x)) vec)
                    ) kernel-collection prob_cluster))
   )
@@ -248,7 +248,7 @@
                     )
                   )
                 )
-              ) 
+              )
               (when (> n 1) (recur (next chunk) (- n 1)))
         )
       )
@@ -261,13 +261,8 @@
 (defn get-pixel [im x y]
   (mikera.image.core/get-pixel im x y))
 
-<<<<<<< HEAD
 (with-primitive-procedures [dropoutted nbox im2vec moe-feed-best-single pixel2gray rgb2uniform get-pixel shape]
 (defquery SingleLearningBest [file-name iter-num hyperparams]
-=======
-(with-primitive-procedures [dropoutted nbox im2vec pixel2gray rgb2uniform get-pixel shape]
-(defquery SingleLearning [file-name iter-num hyperparams]
->>>>>>> 122486396908e3eabce8825a4e3ee316d07c6536
   (let [model (single-moe-sampler hyperparams)]
     (for-images-m file-name iter-num
        (fn [im]
@@ -288,7 +283,7 @@
                  )
                )
              )
-           
+
            )
          )
       )
@@ -318,7 +313,7 @@
                  )
                )
              )
-           
+
            )
          )
       )
@@ -348,7 +343,7 @@
                  )
                )
              )
-           
+
            )
          )
       )
@@ -381,7 +376,7 @@
                  )
                )
              )
-           
+
            )
          )
       )
@@ -411,7 +406,7 @@
                  )
                )
              )
-           
+
            )
          )
       )
@@ -441,7 +436,7 @@
                  )
                )
              )
-           
+
            )
          )
       )
