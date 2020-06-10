@@ -175,20 +175,13 @@
         mu_vec (repeatedly num_cluster (fn [] (mu-sampler {:n n :mu-mu mu-mu :mu-sigma mu-sigma})))
         factor_vec (repeatedly num_cluster (fn [] (factor-sampler {:n n :factor-mu factor-mu :factor-sigma factor-sigma})))
         kernel_vec (repeatedly num_cluster (fn [] (kernel-sampler n)))]
-    {:tuned-parameter
-       {:lambda lambda
-        :alpha alpha
-        :mu-mu mu-mu
-        :mu-sigma mu-sigma
-        :factor-mu factor-mu
-        :factor-sigma factor-sigma}
-     :model 
+    
        {:num_cluster num_cluster
         :pi pi
         :mu_vec mu_vec
         :factor_vec factor_vec
         :kernel_vec kernel_vec}  
-    }
+    
     )
   )
 ;; @@
