@@ -196,12 +196,13 @@
 ;; @@
 (defm autotuned-hierarchical-moe-sampler [hyperparameters]
   (let [n (:n hyperparameters)
-        tune-p-a (:tune-p-a hyperparameters)
-        tune-p-b (:tune-p-b hyperparameters)
-        p (sample (beta tune-p-a tune-p-b))
         
         lambda-tune (:lambda-tune hyperparameters) ; inverse of predicted number of cluster
         lambda (sample (exponential lambda-tune))
+        
+        tune-p-a (:tune-p-a hyperparameters)
+        tune-p-b (:tune-p-b hyperparameters)
+        p (* (sample (beta tune-p-a tune-p-b)) (/ 1 lambda))
         
         alpha-tune (:alpha-tune hyperparameters) ; Not that important.
         alpha (sample (exponential alpha-tune)) 
