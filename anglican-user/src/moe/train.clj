@@ -94,9 +94,28 @@
 ;; @@
 
 ;; @@
-(def results (take 1 test-single-best))
+(def results ((take 100 test-auto-hier-best))
 ;; @@
 
 ;; @@
 results
+;; @@
+
+;; @@
+(defn save-result [result]
+  (let [length (count result)]
+   (with-open [w (clojure.java.io/writer "data/results-auto-hier-best.data" :append true)]
+     (loop [index 0]
+       (if (= index length)
+         (.write w (str "\n"))
+         (do
+       		(.write w (str (nth result index)))
+       		(.write w (str ","))
+         	(recur (+ index 1))
+         )
+       )
+       )
+     )
+    )
+  )
 ;; @@
