@@ -184,6 +184,9 @@
 
 (defn rgb-from-components [x y z]
   (mikera.image.colours/rgb-from-components x y z))
+
+(defn get-pixel [im x y]
+  (mikera.image.core/get-pixel im x y))
 ;; @@
 
 ;; @@
@@ -222,190 +225,55 @@
 ;; @@
 
 ;; @@
-(defn get-pixel [im x y]
-  (mikera.image.core/get-pixel im x y))
-
-(with-primitive-procedures [dropoutted nbox im2vec moe-feed-best-single pixel2gray rgb2uniform get-pixel shape]
-(defquery SingleLearningBest [file-name iter-num hyperparams]
-  (let [model (single-moe-sampler hyperparams)]
-    (for-images-m file-name iter-num
-       (fn [im]
-         (let [dropped (dropoutted im 0.3)])
-         (loop [x 0 y 0]
-           (if (= y 32)
-             nil
-             (if (= x 32)
-               (recur 0 (inc y))
-               (do
-                 (let [box (nbox im 3 x y)
-                       box-vector (im2vec box 7)
-                       gray-vector (map pixel2gray box-vector)
-                       uniform-vector (map rgb2uniform gray-vector)
-                       ret (moe-feed-best-single model uniform-vector)]
-                   (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret))
-                 (recur (inc x) y)
-                 )
-               )
-             )
-           
-           )
-         )
+(with-primitive-procedures [dropoutted nbox im2vec pixel2gray rgb2uniform get-pixel shape
+                            moe-feed-best-single moe-feed-prob-single moe-feed-weight-single
+                            moe-feed-best-hierarchical moe-feed-prob-hierarchical moe-feed-weight-hierarchical]
+  (defquery train [file-name iter-num drop-prob box-size hyperparams]
+    (let [model (if (:is-single hyperparams)
+                  (if (:auto-tune hyperparams)
+                    (autotuned-single-moe-sampler hyperparams)
+                    (single-moe-sampler hyperparams)
+                    )
+                  (if (:auto-tune hyperparams)
+                    (autotuned-hierarchical-moe-sampler hyperparams)
+                    (hierarchical-moe-sampler hyperparams)
+                    )
+                  )
+          feeder (case (:feeder hyperparams)
+                   "best" (if (:is-single hyperparams) moe-feed-best-single moe-feed-best-hierarchical)
+                   "prob" (if (:is-single hyperparams) moe-feed-prob-single moe-feed-prob-hierarchical)
+                   (if (:is-single hyperparams) moe-feed-weight-single moe-feed-weight-hierarchical)
+                   )
+          ]
+      (for-images-m file-name iter-num
+        (fn [im]
+          (let [dropped (dropoutted im drop-prob)]
+            (loop [x 0 y 0]
+              (if (= y 32)
+                nil
+                (if (= x 32)
+                  (recur 0 (inc y))
+                  (do
+                    (let [box (nbox im box-size x y)
+                          box-vector (im2vec box (+ 1 (* 2 box-size)))
+                          gray-vector (map pixel2gray box-vector)
+                          uniform-vector (map rgb2uniform gray-vector)
+                          ret (feeder model uniform-vector)]
+                      (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret))
+                    (recur (inc x) y)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      model
       )
-    model
     )
-  ))
-
-(with-primitive-procedures [dropoutted nbox im2vec moe-feed-prob-single pixel2gray rgb2uniform get-pixel shape]
-(defquery SingleLearningProb [file-name iter-num hyperparams]
-  (let [model (single-moe-sampler hyperparams)]
-    (for-images-m file-name iter-num
-       (fn [im]
-         (let [dropped (dropoutted im 0.3)])
-         (loop [x 0 y 0]
-           (if (= y 32)
-             nil
-             (if (= x 32)
-               (recur 0 (inc y))
-               (do
-                 (let [box (nbox im 3 x y)
-                       box-vector (im2vec box 7)
-                       gray-vector (map pixel2gray box-vector)
-                       uniform-vector (map rgb2uniform gray-vector)
-                       ret (moe-feed-prob-single model uniform-vector)]
-                   (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret))
-                 (recur (inc x) y)
-                 )
-               )
-             )
-           
-           )
-         )
-      )
-    model
-    )
-  ))
-
-(with-primitive-procedures [dropoutted nbox im2vec moe-feed-weight-single pixel2gray rgb2uniform get-pixel shape]
-(defquery SingleLearningWeight [file-name iter-num hyperparams]
-  (let [model (single-moe-sampler hyperparams)]
-    (for-images-m file-name iter-num
-       (fn [im]
-         (let [dropped (dropoutted im 0.3)])
-         (loop [x 0 y 0]
-           (if (= y 32)
-             nil
-             (if (= x 32)
-               (recur 0 (inc y))
-               (do
-                 (let [box (nbox im 3 x y)
-                       box-vector (im2vec box 7)
-                       gray-vector (map pixel2gray box-vector)
-                       uniform-vector (map rgb2uniform gray-vector)
-                       ret (moe-feed-weight-single model uniform-vector)]
-                   (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret))
-                 (recur (inc x) y)
-                 )
-               )
-             )
-           
-           )
-         )
-      )
-    model
-    )
-  ))
-
+  )
 ;; @@
 
 ;; @@
-(with-primitive-procedures [dropoutted nbox im2vec moe-feed-best-hierarchical pixel2gray rgb2uniform get-pixel shape]
-(defquery HierarchicalLearningBest [file-name iter-num hyperparams]
-  (let [model (hierarchical-moe-sampler hyperparams)]
-    (for-images-m file-name iter-num
-       (fn [im]
-         (let [dropped (dropoutted im 0.3)])
-         (loop [x 0 y 0]
-           (if (= y 32)
-             nil
-             (if (= x 32)
-               (recur 0 (inc y))
-               (do
-                 (let [box (nbox im 3 x y)
-                       box-vector (im2vec box 7)
-                       gray-vector (map pixel2gray box-vector)
-                       uniform-vector (map rgb2uniform gray-vector)
-                       ret (moe-feed-best-hierarchical model uniform-vector)]
-                   (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret))
-                 (recur (inc x) y)
-                 )
-               )
-             )
-           
-           )
-         )
-      )
-    model
-    )
-  ))
-
-(with-primitive-procedures [dropoutted nbox im2vec moe-feed-prob-hierarchical pixel2gray rgb2uniform get-pixel shape]
-(defquery HierarchicalLearningProb [file-name iter-num hyperparams]
-  (let [model (hierarchical-moe-sampler hyperparams)]
-    (for-images-m file-name iter-num
-       (fn [im]
-         (let [dropped (dropoutted im 0.3)])
-         (loop [x 0 y 0]
-           (if (= y 32)
-             nil
-             (if (= x 32)
-               (recur 0 (inc y))
-               (do
-                 (let [box (nbox im 3 x y)
-                       box-vector (im2vec box 7)
-                       gray-vector (map pixel2gray box-vector)
-                       uniform-vector (map rgb2uniform gray-vector)
-                       ret (moe-feed-prob-hierarchical model uniform-vector)]
-                   (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret))
-                 (recur (inc x) y)
-                 )
-               )
-             )
-           
-           )
-         )
-      )
-    model
-    )
-  ))
-
-(with-primitive-procedures [dropoutted nbox im2vec moe-feed-weight-hierarchical pixel2gray rgb2uniform get-pixel shape]
-(defquery HierarchicalLearningWeight [file-name iter-num hyperparams]
-  (let [model (hierarchical-moe-sampler hyperparams)]
-    (for-images-m file-name iter-num
-       (fn [im]
-         (let [dropped (dropoutted im 0.3)])
-         (loop [x 0 y 0]
-           (if (= y 32)
-             nil
-             (if (= x 32)
-               (recur 0 (inc y))
-               (do
-                 (let [box (nbox im 3 x y)
-                       box-vector (im2vec box 7)
-                       gray-vector (map pixel2gray box-vector)
-                       uniform-vector (map rgb2uniform gray-vector)
-                       ret (moe-feed-weight-hierarchical model uniform-vector)]
-                   (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret))
-                 (recur (inc x) y)
-                 )
-               )
-             )
-           
-           )
-         )
-      )
-    model
-    )
-  ))
 
 ;; @@
