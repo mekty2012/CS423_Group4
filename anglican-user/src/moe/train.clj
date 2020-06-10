@@ -1,13 +1,9 @@
 ;; gorilla-repl.fileformat = 1
 
 ;; **
-;;; # Gorilla REPL
+;;; # Training file for MoE
 ;;; 
-;;; Welcome to gorilla :-)
-;;; 
-;;; Shift + enter evaluates code. Hit alt+g twice in quick succession or click the menu icon (upper-right corner) for more commands ...
-;;; 
-;;; It's a good habit to run each worksheet in its own namespace: feel free to use the declaration we've provided below if you'd like.
+;;; These are the clojure segments that is used to train and see results. Hyperparameters are also provided.
 ;; **
 
 ;; @@
@@ -42,7 +38,7 @@
    :factor-sigma 1
    :is-single true
    :auto-tune false
-   :feeder "" ; best, prob, weight
+   :feeder "best" ; best, prob, weight
     })
 
 ; p should be lesser then 1/lambda. 
@@ -88,11 +84,19 @@
    :factor-sigma-tune-b 1
    :is-single false
    :auto-tune true
-   :feeder ""
+   :feeder "best"
    }
   )
 ;; @@
 
 ;; @@
+(def test-auto-hier-best (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-hierarchical-hyperparameter]))
+;; @@
 
+;; @@
+(def results (take 1 test-single-best))
+;; @@
+
+;; @@
+results
 ;; @@
