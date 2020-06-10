@@ -148,5 +148,107 @@
 ;; @@
 
 ;; @@
+(defm autotuned-simgle-moe-sampler [hyperparameters]
+  (let [n (:n hyperparameters)
+        lambda-tune (:lambda-tune hyperparameters) ; inverse of predicted number of cluster
+        lambda (sample (exponential lambda-tune))
+        
+        alpha-tune (:alpha-tune hyperparameters) ; Not that important.
+        alpha (sample (exponential alpha-tune)) 
+        
+        mu-mu-tune (:mu-mu-tune hyperparameters) ; Variance of mu-mu
+        mu-mu (sample (normal 0 mu-mu-tune))
+        
+        mu-sigma-tune-a (:mu-sigma-tune-a hyperparameters)
+        mu-sigma-tune-b (:mu-sigma-tune-a hyperparameters)
+        mu-sigma (sample (gamma mu-sigma-tune-a mu-sigma-tune-b))
+        
+        factor-mu-tune (:factor-mu-tune hyperparameters)
+        factor-mu (sample (normal 0 mu-mu-tune))
+        
+        factor-sigma-tune-a (:factor-sigma-tune-a hyperparameters)
+        factor-sigma-tune-b (:factor-sigma-tune-b hyperparameters)
+        factor-sigma (sample (gamma factor-sigma-tune-a factor-sigma-tune-b))
+        
+        num_cluster (cluster-num-sampler lambda)
+        pi (pi-sampler {:n num_cluster :alpha alpha})
+        mu_vec (repeatedly num_cluster (fn [] (mu-sampler {:n n :mu-mu mu-mu :mu-sigma mu-sigma})))
+        factor_vec (repeatedly num_cluster (fn [] (factor-sampler {:n n :factor-mu factor-mu :factor-sigma factor-sigma})))
+        kernel_vec (repeatedly num_cluster (fn [] (kernel-sampler n)))]
+    {:tuned-parameter
+       {:lambda lambda
+        :alpha alpha
+        :mu-mu mu-mu
+        :mu-sigma mu-sigma
+        :factor-mu factor-mu
+        :factor-sigma factor-sigma}
+     :model 
+       {:num_cluster num_cluster
+        :pi pi
+        :mu_vec mu_vec
+        :factor_vec factor_vec
+        :kernel_vec kernel_vec}  
+    }
+    )
+  )
+;; @@
+
+;; @@
+(defm autotuned-hierarchical-moe-sampler [hyperparameters]
+  (let [n (:n hyperparameters)
+        tune-p-a (:tune-p-a hyperparameters)
+        tune-p-b (:tune-p-b hyperparameters)
+        p (sample (beta tune-p-a tune-p-b))
+        
+        lambda-tune (:lambda-tune hyperparameters) ; inverse of predicted number of cluster
+        lambda (sample (exponential lambda-tune))
+        
+        alpha-tune (:alpha-tune hyperparameters) ; Not that important.
+        alpha (sample (exponential alpha-tune)) 
+        
+        mu-mu-tune (:mu-mu-tune hyperparameters) ; Variance of mu-mu
+        mu-mu (sample (normal 0 mu-mu-tune))
+        
+        mu-sigma-tune-a (:mu-sigma-tune-a hyperparameters)
+        mu-sigma-tune-b (:mu-sigma-tune-a hyperparameters)
+        mu-sigma (sample (gamma mu-sigma-tune-a mu-sigma-tune-b))
+        
+        factor-mu-tune (:factor-mu-tune hyperparameters)
+        factor-mu (sample (normal 0 mu-mu-tune))
+        
+        factor-sigma-tune-a (:factor-sigma-tune-a hyperparameters)
+        factor-sigma-tune-b (:factor-sigma-tune-b hyperparameters)
+        factor-sigma (sample (gamma factor-sigma-tune-a factor-sigma-tune-b))
+        
+        num_cluster (cluster-num-sampler lambda)
+        
+        pi (pi-sampler {:n num_cluster :alpha alpha})
+        
+        mu_vec (repeatedly num_cluster 
+                           (fn [] (mu-sampler {:n n :mu-mu mu-mu :mu-sigma mu-sigma})))
+        
+        factor_vec (repeatedly num_cluster 
+                               (fn [] (factor-sampler {:n n :factor-mu factor-mu :factor-sigma factor-sigma})))
+        
+        ischild_vec (repeatedly num_cluster 
+                                (fn [] (sample (bernoulli p))))
+        
+        child_vec (map (fn [i] 
+                         (if (= i 1) 
+                           (hierarchical-moe-sampler hyperparameters)
+                           (kernel-sampler n)
+                           )) ischild_vec)]
+ 
+      {:num_cluster num_cluster
+       :pi pi
+       :mu_vec mu_vec
+       :factor_vec factor_vec
+       :ischild_vec ischild_vec
+       :child_vec child_vec}
+    )
+  )
+;; @@
+
+;; @@
 
 ;; @@
