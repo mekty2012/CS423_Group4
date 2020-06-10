@@ -148,7 +148,7 @@
 ;; @@
 
 ;; @@
-(defm autotuned-simgle-moe-sampler [hyperparameters]
+(defm autotuned-single-moe-sampler [hyperparameters]
   (let [n (:n hyperparameters)
         lambda-tune (:lambda-tune hyperparameters) ; inverse of predicted number of cluster
         lambda (sample (exponential lambda-tune))
