@@ -56,7 +56,7 @@
    :feeder ""})
 
 (def autotune-single-hyperparameter
-  {:n 25
+  {:n 49
    :lambda-tune 0.2
    :alpha-tune 1
    :mu-mu-tune 1
@@ -105,6 +105,42 @@
    :feeder "prob"
    }
   )
+
+(def autotune-hierarchical-hyperparameter-box-2
+  {:n 25
+   :lambda-tune 0.2
+   :tune-p-a 2
+   :tune-p-b 2
+   :alpha-tune 1
+   :mu-mu-tune 1
+   :mu-sigma-tune-a 5
+   :mu-sigma-tune-b 1
+   :factor-mu-tune 1
+   :factor-sigma-tune-a 5
+   :factor-sigma-tune-b 1
+   :is-single false
+   :auto-tune true
+   :feeder "best"
+   }
+  )
+
+(def autotune-hierarchical-hyperparameter-box-1
+  {:n 9
+   :lambda-tune 0.2
+   :tune-p-a 2
+   :tune-p-b 2
+   :alpha-tune 1
+   :mu-mu-tune 1
+   :mu-sigma-tune-a 5
+   :mu-sigma-tune-b 1
+   :factor-mu-tune 1
+   :factor-sigma-tune-a 5
+   :factor-sigma-tune-b 1
+   :is-single false
+   :auto-tune true
+   :feeder "best"
+   }
+  )
 ;; @@
 
 ;; @@
@@ -126,38 +162,164 @@
   )
 ;; @@
 
+;; **
+;;; Testing for time spent
+;; **
+
 ;; @@
-(print "Testing time for best query. Current time is: ")
+(println "Control")
+(println "Algorithm: lmh")
+(println "iter num: 3")
+(println "Box size: 3")
+(println "Feed type: 'best'")
+
+
+(print "Testing time for control. Current time is: ")
 (println (now))
 
-(def test-auto-hier-best (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 2 autotune-hierarchical-hyperparameter]))
+(def test-control (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-hierarchical-hyperparameter]))
 ;; @@
 
 ;; @@
-(print "Testing time to take one element of best. Current time is: ")
+(print "Testing time to take one element of control. Current time is: ")
 (println (now))
 
-(def results-best (take 1 test-auto-hier-best))
+(def results-control (take 1 test-control))
 
-(save-result results-best "test-best-hier.txt")
+(save-result results-control "test-control.txt")
+
+(print "Saving done. Current time is: ")
+(println (now))
 ;; @@
 
 ;; @@
-(print "Testing time for prob query. Current time is: ")
+(println "Feed type change to 'prob'")
+
+(print "Testing time for 'prob' change. Current time is: ")
 (println (now))
 
-(def test-auto-hier-prob (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-single-hyperparameter]))
+(def test-prob (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-hierarchical-hyperparameter-prob]))
 ;; @@
 
 ;; @@
-(print "Testing time to take one element of best. Current time is: ")
+(print "Testing time to take one element of 'prob'. Current time is: ")
 (println (now))
 
-(def results-prob (take 1 test-auto-hier-best))
+(def results-prob (take 1 test-prob))
 
-(save-result results-prob "test-best-prob.txt")
+(save-result results-prob "test-prob.txt")
+
+
+(print "Saving done. Current time is: ")
+(println (now))
 ;; @@
 
 ;; @@
+(println "Box size change to 2")
 
+(print "Testing time for box size 2. Current time is: ")
+(println (now))
+
+(def test-box-2 (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 2 autotune-hierarchical-hyperparameter-box-2]))
+;; @@
+
+;; @@
+(print "Testing time to take one element of box size 2. Current time is: ")
+(println (now))
+
+(def results-box-2 (take 1 test-box-2))
+
+(save-result results-box-2 "test-box-2.txt")
+
+
+(print "Saving done. Current time is: ")
+(println (now))
+;; @@
+
+;; @@
+(println "Box size change to 1")
+
+(print "Testing time for box size to 1 change. Current time is: ")
+(println (now))
+
+(def test-box-1 (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 1 autotune-hierarchical-hyperparameter-box-1]))
+;; @@
+
+;; @@
+(print "Testing time to take one element of box size 1. Current time is: ")
+(println (now))
+
+(def results-box-1 (take 1 test-box-1))
+
+(save-result results-box-1 "test-box-1.txt")
+
+
+(print "Saving done. Current time is: ")
+(println (now))
+;; @@
+
+;; @@
+(println "Iter num change to 10")
+
+(print "Testing time for iter num 10. Current time is: ")
+(println (now))
+
+(def test-iter-num-10 (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 10 0.2 3 autotune-hierarchical-hyperparameter]))
+;; @@
+
+;; @@
+(print "Testing time to take one element of iter num 10. Current time is: ")
+(println (now))
+
+(def results-iter-num-10 (take 1 test-iter-num-10))
+
+(save-result results-iter-num-10 "test-iter-num-10.txt")
+
+
+(print "Saving done. Current time is: ")
+(println (now))
+;; @@
+
+;; @@
+(println "Algorithm change to is")
+
+(print "Testing time for is. Current time is: ")
+(println (now))
+
+(def test-is (doquery :importance train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-hierarchical-hyperparameter]))
+;; @@
+
+;; @@
+(print "Testing time to take one element of is. Current time is: ")
+(println (now))
+
+(def results-is (take 1 test-is))
+
+(save-result results-is "test-is.txt")
+
+
+(print "Saving done. Current time is: ")
+(println (now))
+;; @@
+
+;; @@
+(println "Algorithm change to bbvb")
+
+(print "Testing time for bbvb. Current time is: ")
+(println (now))
+
+(def test-bbvb (doquery :bbvb train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-hierarchical-hyperparameter]))
+;; @@
+
+;; @@
+(print "Testing time to take one element of bbvb. Current time is: ")
+(println (now))
+
+(def results-bbvb (take 1 test-bbvb))
+
+(save-result results-bbvb "test-bbvb.txt")
+
+
+(print "Saving done. Current time is: ")
+(println (now))
 ;; @@
