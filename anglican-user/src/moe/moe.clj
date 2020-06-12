@@ -24,6 +24,9 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[nil,nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[nil,nil],nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[[nil,nil],nil],nil],nil],nil]"}
+;; <=
 
 ;; @@
 (defn pixel2gray [p]
@@ -35,20 +38,9 @@
   (- (/ p 127.5) 1)
   )
 ;; @@
-
-;; @@
-(defn max-index [v] 
-  (let [length (count v)]
-    (loop [maximum (nth v 0)
-           max-index 0
-           i 1]
-      (if (< i length)
-        (let [value (nth v i)]
-          (if (> value maximum)
-            (recur value i (inc i))
-            (recur maximum max-index (inc i))))
-        max-index))))
-;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/pixel2gray</span>","value":"#'template/pixel2gray"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/rgb2uniform</span>","value":"#'template/rgb2uniform"}],"value":"[#'template/pixel2gray,#'template/rgb2uniform]"}
+;; <=
 
 ;; @@
 (defn normalize [vector]
@@ -64,6 +56,23 @@
 
  (defn zero-array [shape]
    (clojure.core.matrix/zero-array shape))
+;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/normalize</span>","value":"#'template/normalize"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/shape</span>","value":"#'template/shape"}],"value":"[#'template/normalize,#'template/shape]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/add</span>","value":"#'template/add"}],"value":"[[#'template/normalize,#'template/shape],#'template/add]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/zero-array</span>","value":"#'template/zero-array"}],"value":"[[[#'template/normalize,#'template/shape],#'template/add],#'template/zero-array]"}
+;; <=
+
+;; @@
+(defn max-index [v] 
+  (let [length (count v)]
+    (loop [maximum (nth v 0)
+           max-index 0
+           i 1]
+      (if (< i length)
+        (let [value (nth v i)]
+          (if (> value maximum)
+            (recur value i (inc i))
+            (recur maximum max-index (inc i))))
+        max-index))))
 ;; @@
 
 ;; @@
@@ -83,9 +92,8 @@
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
         kernel_vec (:kernel_vec model)
-        observe-gmm ()
         prob_cluster (map (fn [index] 
-                             (observe* (factor-gmm n pi mu_vec factor_vec) [index vect])) (range 0 num_cluster))
+                             (observe* (factor-gmm n pi mu_vec factor_vec) (list index vect))) (range 0 num_cluster))
         index (max-index prob_cluster)]
     (kernel-compute (nth kernel_vec index) vect)
     )
@@ -102,9 +110,9 @@
         kernel_vec (:kernel_vec model)
         prob_cluster (normalize 
                         (map 
-                          (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect]))) 
+                          (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) (list index vect))))
                           (range 0 num_cluster)))
-        index (sample* (discrete prob_cluster))]
+        index (sample (discrete prob_cluster))]
     (kernel-compute (nth kernel_vec index) vect)
   )
  )
@@ -121,7 +129,7 @@
         kernel_vec (:kernel_vec model)
         prob_cluster (normalize 
                         (map 
-                          (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect]))) 
+                          (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) (list index vect)))) 
                           (range 0 num_cluster)))
         kernel-collection (map (fn [x] (kernel-compute x vect)) kernel_vec)]
     (reduce add (zero-array shape) 
@@ -142,11 +150,12 @@
         factor_vec (:factor_vec model)
         ischild_vec (:ischild_vec model)
         child_vec (:child_vec model)
-        prob_cluster (map (fn [index] 
-                             (observe* (factor-gmm n pi mu_vec factor_vec) [index vect])) (range 0 num_cluster))
-        index (max-index prob_cluster)]
+        probs (map (fn [index] 
+                             (observe* (factor-gmm n pi mu_vec factor_vec) (list index vect))) 
+                          (range 0 num_cluster))
+        index (max-index probs)]
     (if (= (nth ischild_vec index) 1)
-      (moe-feed-best-hierarchical (nth child_vec index) vect)
+      (moe-feed-best-hierarchical n (nth child_vec index) vect)
       (kernel-compute (nth child_vec index) vect)
       )
     )
@@ -165,9 +174,9 @@
         prob_cluster  (normalize (map 
                                     (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect]))) 
                                     (range 0 num_cluster)))
-        index (sample* (discrete prob_cluster))]
+        index (sample (discrete prob_cluster))]
     (if (= (nth ischild_vec index) 1)
-      (moe-feed-prob-hierarchical (nth child_vec index) vect)
+      (moe-feed-prob-hierarchical n (nth child_vec index) vect)
       (kernel-compute (nth child_vec index) vect)
       )
   )
@@ -188,11 +197,11 @@
                         (map 
                           (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect]))) 
                           (range 0 num_cluster)))
-         index (sample* (discrete prob_cluster))
+         index (sample (discrete prob_cluster))
         kernel-collection (map 
                             (fn [x] 
                               (if (= (nth ischild_vec x) 1) 
-                                (moe-feed-weight-hierarchical (nth child_vec x) vect) 
+                                (moe-feed-weight-hierarchical n (nth child_vec x) vect) 
                                 (kernel-compute x vect))) child_vec)]
     (reduce add (zero-array shape) 
             (map (fn [vec p] 
@@ -202,6 +211,9 @@
  )
  )
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/kernel-compute</span>","value":"#'template/kernel-compute"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-prob-single</span>","value":"#'template/moe-feed-prob-single"}],"value":"[#'template/kernel-compute,#'template/moe-feed-prob-single]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-weight-single</span>","value":"#'template/moe-feed-weight-single"}],"value":"[[#'template/kernel-compute,#'template/moe-feed-prob-single],#'template/moe-feed-weight-single]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-prob-hierarchical</span>","value":"#'template/moe-feed-prob-hierarchical"}],"value":"[[[#'template/kernel-compute,#'template/moe-feed-prob-single],#'template/moe-feed-weight-single],#'template/moe-feed-prob-hierarchical]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-weight-hierarchical</span>","value":"#'template/moe-feed-weight-hierarchical"}],"value":"[[[[#'template/kernel-compute,#'template/moe-feed-prob-single],#'template/moe-feed-weight-single],#'template/moe-feed-prob-hierarchical],#'template/moe-feed-weight-hierarchical]"}
+;; <=
 
 ;; @@
 (defn get-file [file-name]
@@ -229,9 +241,12 @@
 (defn now []
   (.toString (java.util.Date.)))
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/get-file</span>","value":"#'template/get-file"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/new-image</span>","value":"#'template/new-image"}],"value":"[#'template/get-file,#'template/new-image]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/to-byte-array</span>","value":"#'template/to-byte-array"}],"value":"[[#'template/get-file,#'template/new-image],#'template/to-byte-array]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/get-pixels</span>","value":"#'template/get-pixels"}],"value":"[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/set-pixel</span>","value":"#'template/set-pixel"}],"value":"[[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels],#'template/set-pixel]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/rgb-from-components</span>","value":"#'template/rgb-from-components"}],"value":"[[[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels],#'template/set-pixel],#'template/rgb-from-components]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/get-pixel</span>","value":"#'template/get-pixel"}],"value":"[[[[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels],#'template/set-pixel],#'template/rgb-from-components],#'template/get-pixel]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/now</span>","value":"#'template/now"}],"value":"[[[[[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels],#'template/set-pixel],#'template/rgb-from-components],#'template/get-pixel],#'template/now]"}
+;; <=
 
 ;; @@
-;deer classifier 없음
+;no deer classifier
 (with-primitive-procedures [get-file new-image to-byte-array get-pixels set-pixel rgb-from-components sb2ub]
 (defm for-images-m-old
   [file-name iter-num do-fun]
@@ -265,9 +280,12 @@
   )
 )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/for-images-m-old</span>","value":"#'template/for-images-m-old"}
+;; <=
 
 ;; @@
-;deer classifier 있음
+;has deer classifier
 (with-primitive-procedures [get-file new-image to-byte-array get-pixels set-pixel rgb-from-components sb2ub now]
 (defm for-images-m
   [file-name iter-num do-fun]
@@ -309,6 +327,9 @@
   )
 )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/for-images-m</span>","value":"#'template/for-images-m"}
+;; <=
 
 ;; @@
 (with-primitive-procedures [nbox im2vec pixel2gray rgb2uniform get-pixel shape now]
@@ -342,7 +363,7 @@
                           box-vector (im2vec box (+ 1 (* 2 box-size)))
                           gray-vector (map pixel2gray box-vector)
                           uniform-vector (map rgb2uniform gray-vector)
-                          ret (feeder (+ 1 (* 2 box-size))  model uniform-vector)]
+                          ret (feeder (+ 1 (* 2 box-size)) model uniform-vector)]
                       (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret))
                     (recur (inc x) y)
                     )
@@ -358,8 +379,4 @@
       )
     )
   )
-;; @@
-
-;; @@
-
 ;; @@
