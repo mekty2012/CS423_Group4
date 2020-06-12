@@ -22,10 +22,16 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[nil,nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[nil,nil],nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[[nil,nil],nil],nil],nil],nil]"}
+;; <=
 
 ;; @@
 (for-images "data/cifar-10-batches-bin/data_batch_1.bin" 2 (fn [im] (mikera.image.core/show im)))
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
+;; <=
 
 ;; @@
 (def image (mikera.image.core/new-image 32 32))
@@ -54,6 +60,10 @@
 (def ch (take 1 (byte-streams/convert st (byte-streams/seq-of java.nio.ByteBuffer) {:chunk-size 1024})))
 
 (byte-streams/print-bytes ch)
+;; @@
+
+;; @@
+(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 2 (fn [im] (mikera.image.core/show im)))
 ;; @@
 
 ;; @@
