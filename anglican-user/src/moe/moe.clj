@@ -228,8 +228,9 @@
 ;; @@
 
 ;; @@
+;deer classifier 없음
 (with-primitive-procedures [get-file new-image to-byte-array get-pixels set-pixel rgb-from-components sb2ub]
-(defm for-images-m
+(defm for-images-m-old
   [file-name iter-num do-fun]
   "Read file-name, to 32*32 images, and for each image, apply do-fun. It will perform do-fun for n images."
   (let [f (get-file file-name)
@@ -259,7 +260,48 @@
       )
     )
   )
+)
+;; @@
+
+;; @@
+;deer classifier 있음
+(with-primitive-procedures [get-file new-image to-byte-array get-pixels set-pixel rgb-from-components sb2ub]
+(defm for-images-m
+  [file-name iter-num do-fun]
+  "Read file-name, to 32*32 images, and for each image, apply do-fun. It will perform do-fun for n images."
+  (let [f (get-file file-name)
+		  st (to-byte-array f)]
+    (loop [chunk (partition 3073 st) n iter-num]
+      (let [ch (first chunk)
+            deerclassifier (first ch)
+            firstarray (next ch)
+            image (new-image 32 32)
+            pixels (get-pixels image)]
+          (if (not= deerclassifier 4) (recur (next chunk) n)
+            (do
+              (loop [i 0 j 0]
+                (if (= j 32)
+                  (do-fun image)
+                  (if (= i 32)
+                    (recur 0 (+ j 1))
+                    (do
+                      (set-pixel image i j (rgb-from-components
+                                                               (sb2ub (nth firstarray (+ i (* 32 j))))
+                                                               (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j)))))
+                                                               (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+                      (recur (+ i 1) j)
+                      )
+                    )
+                  )
+                ) 
+                (when (> n 1) (recur (next chunk) (- n 1)))
+            )
+          )
+        )
+      )
+    )
   )
+)
 ;; @@
 
 ;; @@
