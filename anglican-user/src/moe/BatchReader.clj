@@ -17,17 +17,11 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"}
-;; <=
 
 ;; @@
 (defn im-to-mx [image]
   (map (fn [x] (- (/ x 127.5) 1)) image))
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/im-to-mx</span>","value":"#'template/im-to-mx"}
-;; <=
 
 ;; @@
 (defn sb2ub [b]
@@ -74,9 +68,6 @@
   )
 )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/sb2ub</span>","value":"#'template/sb2ub"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/Example</span>","value":"#'template/Example"}],"value":"[#'template/sb2ub,#'template/Example]"}
-;; <=
 
 ;; @@
 (defn for-images [file-name iter-num do-fun]
@@ -109,9 +100,6 @@
     )
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/for-images</span>","value":"#'template/for-images"}
-;; <=
 
 ;; @@
 (defn for-images-deer [file-name iter-num do-fun]
@@ -124,42 +112,32 @@
             firstarray (next ch)
             image (mikera.image.core/new-image 32 32)
             pixels (mikera.image.core/get-pixels image)]
-        	(if (not= ch 5) (recur (next chunk) n)
-        	(do 
-              (loop [i 0 j 0]
-                (if (= j 32)
-                  (do-fun image)
-                  (if (= i 32)
-                    (recur 0 (+ j 1))
-                    (do
-                      (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components
-                                                               (sb2ub (nth firstarray (+ i (* 32 j))))
-                                                               (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j)))))
-                                                               (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
-                      (recur (+ i 1) j)
-                      )
+        (if (not= deerclassifier 4) (recur (next chunk) n)
+          (do 
+            (loop [i 0 j 0]
+              (if (= j 32)
+                (do-fun image)
+                (if (= i 32)
+                  (recur 0 (+ j 1))
+                  (do
+                    (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components
+                                                             (sb2ub (nth firstarray (+ i (* 32 j))))
+                                                             (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j)))))
+                                                             (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+                    (recur (+ i 1) j)
                     )
                   )
-                ) 
+                )
+              ) 
               (when (> n 1) (recur (next chunk) (- n 1)))
+              )
             )
           )
         )
       )
     )
-  )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/for-images-deer</span>","value":"#'template/for-images-deer"}
-;; <=
 
 ;; @@
 (println "batchreader import Success")
 ;; @@
-;; ->
-;;; batchreader import Success
-;;; 
-;; <-
-;; =>
-;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
-;; <=
