@@ -56,7 +56,7 @@
    :feeder ""})
 
 (def autotune-single-hyperparameter
-  {:n 49
+  {:n 25
    :lambda-tune 0.2
    :alpha-tune 1
    :mu-mu-tune 1
@@ -130,7 +130,7 @@
 (print "Testing time for best query. Current time is: ")
 (println (now))
 
-(def test-auto-hier-best (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-hierarchical-hyperparameter]))
+(def test-auto-hier-best (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 2 autotune-hierarchical-hyperparameter]))
 ;; @@
 
 ;; @@

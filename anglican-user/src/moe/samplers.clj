@@ -228,8 +228,8 @@
                                 (fn [] (sample (bernoulli p))))
         
         child_vec (map (fn [i] 
-                         (if (= i 1) 
-                           (hierarchical-moe-sampler hyperparameters)
+                         (if (= i 1)
+                           (autotuned-hierarchical-moe-sampler hyperparameters)
                            (kernel-sampler n)
                            )) ischild_vec)]
  

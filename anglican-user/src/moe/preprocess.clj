@@ -15,9 +15,6 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[nil,nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[nil,nil],nil],nil],nil]"}
-;; <=
 
 ;; @@
 (defn new-image [x y]
@@ -34,9 +31,6 @@
 (defn rgb-from-components [r g b]
   (mikera.image.colours/rgb-from-components r g b))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/new-image</span>","value":"#'template/new-image"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/set-pixel</span>","value":"#'template/set-pixel"}],"value":"[#'template/new-image,#'template/set-pixel]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/get-pixel</span>","value":"#'template/get-pixel"}],"value":"[[#'template/new-image,#'template/set-pixel],#'template/get-pixel]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/rgb-from-components</span>","value":"#'template/rgb-from-components"}],"value":"[[[#'template/new-image,#'template/set-pixel],#'template/get-pixel],#'template/rgb-from-components]"}
-;; <=
 
 ;; @@
 ;Function to return image with each pixel dropped with probability p
@@ -62,9 +56,6 @@
   )
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/dropoutted</span>","value":"#'template/dropoutted"}
-;; <=
 
 ;; @@
 ;Return appropriate grayscale value of given rgb
@@ -95,9 +86,6 @@
     )
   )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/togray</span>","value":"#'template/togray"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/grayscaled</span>","value":"#'template/grayscaled"}],"value":"[#'template/togray,#'template/grayscaled]"}
-;; <=
 
 ;; @@
 ;Function to get 2n+1 by 2n+1 image that is centered at ij pixel of original image.
@@ -111,9 +99,8 @@
               (recur (- 0 n) (+ y 1)) ;One column done, go to next
               (do
               (if (or (< (+ i x) 0) (< (+ j y) 0) (> (+ i x) 31) (> (+ j y ) 31))
-                    (mikera.image.core/set-pixel box (+ x n) (+ y n)(mikera.image.colours/rgb-from-components 0 0 0));If out of bound black pixel in new image
-                (let [pixelcolor (mikera.image.core/get-pixel image (+ i x) (+ j y))] ;Else get rgb and set into image's pixel
-
+                    (mikera.image.core/set-pixel box (+ x n) (+ y n)(mikera.image.colours/rgb-from-components 0 0 0))
+                (let [pixelcolor (mikera.image.core/get-pixel image (+ i x) (+ j y))]
                     (mikera.image.core/set-pixel box (+ x n) (+ y n) pixelcolor)
                   )
                 )
@@ -124,9 +111,6 @@
     )
   ))
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/nbox</span>","value":"#'template/nbox"}
-;; <=
 
 ;; @@
 (defn im2vec [image n]
@@ -141,9 +125,6 @@
     )
   )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/im2vec</span>","value":"#'template/im2vec"}
-;; <=
 
 ;; @@
 
