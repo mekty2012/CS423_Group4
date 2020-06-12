@@ -137,7 +137,3 @@
       )
     )
 ;; @@
-
-;; @@
-(println "batchreader import Success")
-;; @@

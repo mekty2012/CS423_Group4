@@ -67,7 +67,7 @@
    :factor-sigma-tune-b 1
    :is-single true
    :auto-tune true
-   :feeder ""
+   :feeder "prob"
    })
 
 (def autotune-hierarchical-hyperparameter
@@ -87,24 +87,30 @@
    :feeder "best"
    }
   )
+
+(def autotune-hierarchical-hyperparameter-prob
+  {:n 49
+   :lambda-tune 0.2
+   :tune-p-a 2
+   :tune-p-b 2
+   :alpha-tune 1
+   :mu-mu-tune 1
+   :mu-sigma-tune-a 5
+   :mu-sigma-tune-b 1
+   :factor-mu-tune 1
+   :factor-sigma-tune-a 5
+   :factor-sigma-tune-b 1
+   :is-single false
+   :auto-tune true
+   :feeder "prob"
+   }
+  )
 ;; @@
 
 ;; @@
-(def test-auto-hier-best (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-hierarchical-hyperparameter]))
-;; @@
-
-;; @@
-(def results ((take 100 test-auto-hier-best))
-;; @@
-
-;; @@
-results
-;; @@
-
-;; @@
-(defn save-result [result]
+(defn save-result [result file-name]
   (let [length (count result)]
-   (with-open [w (clojure.java.io/writer "data/results-auto-hier-best.data" :append true)]
+   (with-open [w (clojure.java.io/writer file-name :append true)]
      (loop [index 0]
        (if (= index length)
          (.write w (str "\n"))
@@ -118,4 +124,40 @@ results
      )
     )
   )
+;; @@
+
+;; @@
+(print "Testing time for best query. Current time is: ")
+(println (now))
+
+(def test-auto-hier-best (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-hierarchical-hyperparameter]))
+;; @@
+
+;; @@
+(print "Testing time to take one element of best. Current time is: ")
+(println (now))
+
+(def results-best (take 1 test-auto-hier-best))
+
+(save-result results-best "test-best-hier.txt")
+;; @@
+
+;; @@
+(print "Testing time for prob query. Current time is: ")
+(println (now))
+
+(def test-auto-hier-prob (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-single-hyperparameter]))
+;; @@
+
+;; @@
+(print "Testing time to take one element of best. Current time is: ")
+(println (now))
+
+(def results-prob (take 1 test-auto-hier-best))
+
+(save-result results-prob "test-best-prob.txt")
+;; @@
+
+;; @@
+
 ;; @@

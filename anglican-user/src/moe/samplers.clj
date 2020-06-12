@@ -20,7 +20,7 @@
 
 ;; @@
 (defm cluster-num-sampler [lambda]
-  (sample (poisson lambda))
+	(+ 1 (sample (poisson lambda)))
   )
 ;; @@
 

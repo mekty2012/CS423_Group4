@@ -92,7 +92,7 @@
   )
 )    	
   
-(with-primitive-procedures [factor-gmm kernel-compute]
+(with-primitive-procedures [factor-gmm kernel-compute normalize]
 (defm moe-feed-prob-single [n model vect]
   "Performs moe-feed, where gating model leads to cluster probabilistically. It does not need to be sample argument."
   (let [num_cluster (:num_cluster model)
@@ -110,7 +110,7 @@
  )
 )
 
-(with-primitive-procedures [factor-gmm kernel-compute shape add zero-array]
+(with-primitive-procedures [factor-gmm kernel-compute normalize shape add zero-array]
 (defm moe-feed-weight-single [n model vect]
   "Performs moe-feed, where gating model performs weighted sum over all children."
   (let [num_cluster (:num_cluster model)
@@ -153,7 +153,7 @@
   )
 )
 
-(with-primitive-procedures [factor-gmm kernel-compute]
+(with-primitive-procedures [factor-gmm kernel-compute normalize]
 (defm moe-feed-prob-hierarchical [n model vect]
   "Performs moe-feed, where gating model leads to cluster probabilistically. It does not need to be sample argument."
   (let [num_cluster (:num_cluster model)
@@ -174,7 +174,7 @@
  )
 )
 
-(with-primitive-procedures [factor-gmm kernel-compute shape add zero-array]
+(with-primitive-procedures [factor-gmm kernel-compute normalize shape add zero-array]
 (defm moe-feed-weight-hierarchical [n model vect]
   "Performs moe-feed, where gating model performs weighted sum over all children."
   (let [num_cluster (:num_cluster model)
@@ -225,6 +225,9 @@
 
 (defn get-pixel [im x y]
   (mikera.image.core/get-pixel im x y))
+
+(defn now []
+  (.toString (java.util.Date.)))
 ;; @@
 
 ;; @@
@@ -265,7 +268,7 @@
 
 ;; @@
 ;deer classifier 있음
-(with-primitive-procedures [get-file new-image to-byte-array get-pixels set-pixel rgb-from-components sb2ub]
+(with-primitive-procedures [get-file new-image to-byte-array get-pixels set-pixel rgb-from-components sb2ub now]
 (defm for-images-m
   [file-name iter-num do-fun]
   "Read file-name, to 32*32 images, and for each image, apply do-fun. It will perform do-fun for n images."
@@ -293,7 +296,10 @@
                       )
                     )
                   )
-                ) 
+                )
+              	(print (- iter-num (- n 1)))
+              	(print "th iteration done. Current time is: ")
+     			(println (now))
                 (when (> n 1) (recur (next chunk) (- n 1)))
             )
           )
@@ -305,7 +311,7 @@
 ;; @@
 
 ;; @@
-(with-primitive-procedures [dropoutted nbox im2vec pixel2gray rgb2uniform get-pixel shape]
+(with-primitive-procedures [nbox im2vec pixel2gray rgb2uniform get-pixel shape now]
   (defquery train [file-name iter-num drop-prob box-size hyperparams]
     (let [model (if (:is-single hyperparams)
                   (if (:auto-tune hyperparams)
@@ -346,6 +352,8 @@
             )
           )
         )
+      (print "Query made. Current time is: ")
+      (println (now))
       model
       )
     )
