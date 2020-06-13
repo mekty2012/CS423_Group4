@@ -24,9 +24,6 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[nil,nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[nil,nil],nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[[nil,nil],nil],nil],nil],nil]"}
-;; <=
 
 ;; @@
 (defn pixel2gray [p]
@@ -38,9 +35,6 @@
   (- (/ p 127.5) 1)
   )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/pixel2gray</span>","value":"#'template/pixel2gray"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/rgb2uniform</span>","value":"#'template/rgb2uniform"}],"value":"[#'template/pixel2gray,#'template/rgb2uniform]"}
-;; <=
 
 ;; @@
 (defn normalize [vector]
@@ -57,9 +51,6 @@
  (defn zero-array [shape]
    (clojure.core.matrix/zero-array shape))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/normalize</span>","value":"#'template/normalize"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/shape</span>","value":"#'template/shape"}],"value":"[#'template/normalize,#'template/shape]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/add</span>","value":"#'template/add"}],"value":"[[#'template/normalize,#'template/shape],#'template/add]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/zero-array</span>","value":"#'template/zero-array"}],"value":"[[[#'template/normalize,#'template/shape],#'template/add],#'template/zero-array]"}
-;; <=
 
 ;; @@
 (defn max-index [v] 
@@ -211,9 +202,6 @@
  )
  )
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/kernel-compute</span>","value":"#'template/kernel-compute"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-prob-single</span>","value":"#'template/moe-feed-prob-single"}],"value":"[#'template/kernel-compute,#'template/moe-feed-prob-single]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-weight-single</span>","value":"#'template/moe-feed-weight-single"}],"value":"[[#'template/kernel-compute,#'template/moe-feed-prob-single],#'template/moe-feed-weight-single]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-prob-hierarchical</span>","value":"#'template/moe-feed-prob-hierarchical"}],"value":"[[[#'template/kernel-compute,#'template/moe-feed-prob-single],#'template/moe-feed-weight-single],#'template/moe-feed-prob-hierarchical]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/moe-feed-weight-hierarchical</span>","value":"#'template/moe-feed-weight-hierarchical"}],"value":"[[[[#'template/kernel-compute,#'template/moe-feed-prob-single],#'template/moe-feed-weight-single],#'template/moe-feed-prob-hierarchical],#'template/moe-feed-weight-hierarchical]"}
-;; <=
 
 ;; @@
 (defn get-file [file-name]
@@ -241,9 +229,6 @@
 (defn now []
   (.toString (java.util.Date.)))
 ;; @@
-;; =>
-;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/get-file</span>","value":"#'template/get-file"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/new-image</span>","value":"#'template/new-image"}],"value":"[#'template/get-file,#'template/new-image]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/to-byte-array</span>","value":"#'template/to-byte-array"}],"value":"[[#'template/get-file,#'template/new-image],#'template/to-byte-array]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/get-pixels</span>","value":"#'template/get-pixels"}],"value":"[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/set-pixel</span>","value":"#'template/set-pixel"}],"value":"[[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels],#'template/set-pixel]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/rgb-from-components</span>","value":"#'template/rgb-from-components"}],"value":"[[[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels],#'template/set-pixel],#'template/rgb-from-components]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/get-pixel</span>","value":"#'template/get-pixel"}],"value":"[[[[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels],#'template/set-pixel],#'template/rgb-from-components],#'template/get-pixel]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/now</span>","value":"#'template/now"}],"value":"[[[[[[[#'template/get-file,#'template/new-image],#'template/to-byte-array],#'template/get-pixels],#'template/set-pixel],#'template/rgb-from-components],#'template/get-pixel],#'template/now]"}
-;; <=
 
 ;; @@
 ;no deer classifier
@@ -280,9 +265,6 @@
   )
 )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/for-images-m-old</span>","value":"#'template/for-images-m-old"}
-;; <=
 
 ;; @@
 ;has deer classifier
@@ -327,9 +309,6 @@
   )
 )
 ;; @@
-;; =>
-;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/for-images-m</span>","value":"#'template/for-images-m"}
-;; <=
 
 ;; @@
 (with-primitive-procedures [nbox im2vec pixel2gray rgb2uniform get-pixel shape now]

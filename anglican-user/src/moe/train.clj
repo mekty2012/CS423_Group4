@@ -323,3 +323,29 @@
 (print "Saving done. Current time is: ")
 (println (now))
 ;; @@
+
+;; @@
+(println "Box size change to 2 again")
+
+(print "Testing time for box size 2. Current time is: ")
+(println (now))
+
+(def test-box-2-1 (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 2 autotune-hierarchical-hyperparameter-box-2]))
+;; @@
+
+;; @@
+(print "Testing time to take one element of box size 2. Current time is: ")
+(println (now))
+
+(def results-box-2-1 (take 1 test-box-2-1))
+
+(save-result results-box-2-1 "test-box-2-1.txt")
+
+
+(print "Saving done. Current time is: ")
+(println (now))
+;; @@
+
+;; @@
+
+;; @@
