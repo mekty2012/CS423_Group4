@@ -17,6 +17,9 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"}
+;; <=
 
 ;; @@
 (defn eval-multi-variable-normal [x mu sigma]
@@ -32,6 +35,9 @@
     )
   )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/eval-multi-variable-normal</span>","value":"#'template/eval-multi-variable-normal"}
+;; <=
 
 ;; @@
 ; Test required
@@ -53,12 +59,18 @@
                            )))
   )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-unkown'>#multifn[print-method 0x6323e1dd]</span>","value":"#multifn[print-method 0x6323e1dd]"}
+;; <=
 
 ;; @@
 (defn identity-matrix [n]
   (clojure.core.matrix/identity-matrix n)
   )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/identity-matrix</span>","value":"#'template/identity-matrix"}
+;; <=
 
 ;; @@
 ; Test required
@@ -82,9 +94,10 @@
                   gaussian-log-prob-vec (map (fn [i]
                                            (let [mu (nth mu-vec i)
                                                  inv-factor (nth inverse-factor-vec i)]
-                                             (reduce +
+                                             (reduce + 0.0
                                                      (map
-                                                       (fn [t]  (observe* (normal 0 1) (first t)))
+                                                       (fn [t]
+                                                         (observe* (normal 0 1) (first t)))
                                                        (clojure.core.matrix/mmul
                                                          inv-factor
                                                          (clojure.core.matrix/transpose
@@ -96,6 +109,9 @@
               (- (nth log-prob-vec label) (Math/log sum-prob))
               )))
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-unkown'>#multifn[print-method 0x6323e1dd]</span>","value":"#multifn[print-method 0x6323e1dd]"}
+;; <=
 
 ;; @@
 (defn eval-gaussian-mixture [x pi mu-vec sigma-vec]
@@ -105,6 +121,9 @@
     (range 0 (count pi)))
   )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/eval-gaussian-mixture</span>","value":"#'template/eval-gaussian-mixture"}
+;; <=
 
 ;; @@
 (defn row-mean [data] (clojure.core.matrix.operators// (reduce clojure.core.matrix.operators/+ data)
@@ -121,4 +140,11 @@
 (defn get-row [matrix]
   (clojure.core.matrix/get-row matrix)
   )
+;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/row-mean</span>","value":"#'template/row-mean"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/invert</span>","value":"#'template/invert"}],"value":"[#'template/row-mean,#'template/invert]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/shape</span>","value":"#'template/shape"}],"value":"[[#'template/row-mean,#'template/invert],#'template/shape]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/get-row</span>","value":"#'template/get-row"}],"value":"[[[#'template/row-mean,#'template/invert],#'template/shape],#'template/get-row]"}
+;; <=
+
+;; @@
+
 ;; @@

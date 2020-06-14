@@ -83,13 +83,14 @@
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
         kernel_vec (:kernel_vec model)
-        prob_cluster (map (fn [index] 
-                             (observe* (factor-gmm n pi mu_vec factor_vec) (list index vect))) (range 0 num_cluster))
+        prob_cluster ((map (fn [index] 
+                             (observe* (factor-gmm n pi mu_vec factor_vec) (list index vect))) (range 0 num_cluster)))
         index (max-index prob_cluster)]
     (kernel-compute (nth kernel_vec index) vect)
     )
   )
-)    	
+)
+
   
 (with-primitive-procedures [factor-gmm kernel-compute normalize]
 (defm moe-feed-prob-single [n model vect]

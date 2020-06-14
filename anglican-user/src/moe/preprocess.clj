@@ -24,7 +24,7 @@
   (mikera.image.core/set-pixel im x y rgb)
   )
 
-(defn get-pixel [im x y]g
+(defn get-pixel [im x y]
   (mikera.image.core/get-pixel im x y)
   )
 
