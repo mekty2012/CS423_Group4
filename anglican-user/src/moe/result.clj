@@ -28,14 +28,6 @@
 ;; @@
 
 ;; @@
-(defm silly [a b]
-  (+ a b)
-  )
-
-((silly (fn [a b] a) nil 3 3))
-;; @@
-
-;; @@
 (defn uniform2pixel [r]
   (if (< r -1)
     0
@@ -123,7 +115,7 @@
 
 ;; @@
 (mikera.image.core/show original)
-(def dropped (dropoutted original 0.1))
+(def dropped (dropoutted-normal original 0.1))
 (mikera.image.core/show dropped)
 ;; @@
 
