@@ -24,7 +24,7 @@
   (mikera.image.core/set-pixel im x y rgb)
   )
 
-(defn get-pixel [im x y]
+(defn get-pixel [im x y]g
   (mikera.image.core/get-pixel im x y)
   )
 
@@ -54,6 +54,28 @@
       )
     )
   )
+  )
+;; @@
+
+;; @@
+(defn dropoutted-normal [image p]
+  (let [ret-image (new-image 32 32)]
+    (loop [x 0 y 0]
+      (if (= y 32)
+        ret-image ;Loop done. Return new image.
+        (if (= x 32)
+          (recur 0 (+ y 1))
+          (do
+            (if ( < (rand) p)
+              (set-pixel ret-image x y (rgb-from-components 0 0 0)) ;Below threshold. Drop pixel
+              (set-pixel ret-image x y (get-pixel image x y)) ;Else keep pixel
+              )
+            (recur (+ x 1) y)
+            )
+          )
+        )
+      )
+    )
   )
 ;; @@
 
@@ -90,7 +112,6 @@
 ;; @@
 ;Function to get 2n+1 by 2n+1 image that is centered at ij pixel of original image.
 (defn nbox [image n i j]
-
   (let [box (mikera.image.core/new-image (+ (* 2 n) 1) (+ (* 2 n) 1))]
     (loop [x (- 0 n) y (- 0 n)]
     	(if (= y (+ 1 n))

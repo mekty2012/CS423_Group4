@@ -297,10 +297,13 @@
                     )
                   )
                 )
-              	(print (- iter-num (- n 1)))
-              	(print "th iteration done. Current time is: ")
-     			(println (now))
-                (when (> n 1) (recur (next chunk) (- n 1)))
+              	(if (= 0 (mod n 10))
+                 (do 
+                   (print (- iter-num n))
+                   (print "th iteration done. Current time is: ")
+                   (println (now))
+                   (when (> n 1) (recur (next chunk) (- n 1))))
+                 (when (> n 1) (recur (next chunk) (- n 1))))
             )
           )
         )
@@ -358,4 +361,8 @@
       )
     )
   )
+;; @@
+
+;; @@
+
 ;; @@

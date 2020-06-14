@@ -71,7 +71,7 @@
    })
 
 (def autotune-hierarchical-hyperparameter
-  {:n 49
+  {:n 25
    :lambda-tune 0.2
    :tune-p-a 2
    :tune-p-b 2
@@ -84,7 +84,7 @@
    :factor-sigma-tune-b 1
    :is-single false
    :auto-tune true
-   :feeder "best"
+   :feeder "prob"
    }
   )
 
@@ -153,6 +153,8 @@
          (do
        		(.write w (str (nth result index)))
        		(.write w (str ","))
+           	(print "Saved result ")
+            (println index)
          	(recur (+ index 1))
          )
        )
@@ -162,6 +164,31 @@
   )
 ;; @@
 
+;; @@
+;Training
+(print "Training. ")
+(println "Algorithm: lmh")
+(println "iter num: 50")
+(println "Box size: 2")
+(println "Feed type: 'prob'")
+
+
+(def training (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 50 0.2 2 autotune-hierarchical-hyperparameter]))
+;; @@
+
+;; @@
+(print "Saving data: ")
+(println (now))
+
+(def results (take 10 training))
+
+(save-result results "data/results.txt")
+
+
+(print "Saving done. Current time is: ")
+(println (now))
+;; @@
+
 ;; **
 ;;; Testing for time spent
 ;; **
@@ -169,7 +196,7 @@
 ;; @@
 (println "Control")
 (println "Algorithm: lmh")
-(println "iter num: 3")
+(println "iter num: 100")
 (println "Box size: 3")
 (println "Feed type: 'best'")
 
@@ -177,7 +204,7 @@
 (print "Testing time for control. Current time is: ")
 (println (now))
 
-(def test-control (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 3 autotune-hierarchical-hyperparameter]))
+(def test-control (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 100 0.2 2 autotune-hierarchical-hyperparameter]))
 ;; @@
 
 ;; @@
@@ -220,14 +247,14 @@
 (print "Testing time for box size 2. Current time is: ")
 (println (now))
 
-(def test-box-2 (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 3 0.2 2 autotune-hierarchical-hyperparameter-box-2]))
+(def test-box-2 (doquery :lmh train ["data/cifar-10-batches-bin/data_batch_1.bin" 300 0.2 2 autotune-hierarchical-hyperparameter-box-2]))
 ;; @@
 
 ;; @@
 (print "Testing time to take one element of box size 2. Current time is: ")
 (println (now))
 
-(def results-box-2 (take 1 test-box-2))
+(def results-box-2 (take 100 test-box-2))
 
 (save-result results-box-2 "test-box-2.txt")
 
