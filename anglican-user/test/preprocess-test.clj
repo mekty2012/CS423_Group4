@@ -9,7 +9,8 @@
 ;; @@
 (ns moe.preprocess; shouldn't it have a different name?
   (:require [gorilla-plot.core :as plot]
-            [moe.preprocess :refer :all]))
+            [moe.preprocess :refer :all]
+            [moe.batchreader :refer :all]))
 (use 'nstools.ns)
 (require 'mikera.image.core)
 (require 'mikera.image.colours)
@@ -33,8 +34,8 @@
         )
     )
   )
-(def dropped (dropoutted image 0.5))
-(mikera.image.core/show dropped)
+;(def dropped (dropoutted image 0.5))
+;(mikera.image.core/show dropped)
 (mikera.image.core/show image)
 ;; @@
 
@@ -60,6 +61,14 @@
 
 ;; @@
 (map mikera.image.colours/components-rgb (im2vec sevenbox00 7))
+;; @@
+
+;; @@
+(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 1 (fn [im] (mikera.image.core/save (grayscaled im) "/home/gary/monochrome.png" :quality 1.0 :progressive false))) ; OpenJDK does not support .jpg
+;; @@
+
+;; @@
+(mikera.image.core/save (dropoutted "/home/gary/monochrome.png" 0.2) "/home/gary/dropout.png" :quality 1.0 :progressive false);wrong arity error occuring
 ;; @@
 
 ;; @@

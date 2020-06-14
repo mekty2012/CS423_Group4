@@ -57,7 +57,11 @@
 ;; @@
 
 ;; @@
-(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 100 (fn [im] (mikera.image.core/show im)))
+(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 1 (fn [im] (mikera.image.core/show im)))
+;; @@
+
+;; @@
+(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 1 (fn [im] (mikera.image.core/save im "/home/gary/orig.png" :quality 1.0 :progressive false))) ; OpenJDK does not support .jpg
 ;; @@
 
 ;; @@
