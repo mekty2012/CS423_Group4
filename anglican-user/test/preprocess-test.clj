@@ -64,11 +64,40 @@
 ;; @@
 
 ;; @@
-(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 1 (fn [im] (mikera.image.core/save (grayscaled im) "/home/gary/monochrome.png" :quality 1.0 :progressive false))) ; OpenJDK does not support .jpg
+(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 1 (fn [im] (mikera.image.core/save (grayscaled im) "/home/gary/monochrasaome.png" :quality 1.0 :progressive false))) ; OpenJDK does not support .jpg
 ;; @@
 
 ;; @@
-(mikera.image.core/save (dropoutted "/home/gary/monochrome.png" 0.2) "/home/gary/dropout.png" :quality 1.0 :progressive false);wrong arity error occuring
+;Function to return image with each pixel dropped with probability p
+(with-primitive-procedures [new-image set-pixel rgb-from-components get-pixel]
+(defn d [image p]
+  (let [ret-image (mikera.image.core/new-image 32 32)]
+    (loop [x 0 y 0]
+      (if (= y 32)
+        ret-image
+        (if (= x 32)
+          (recur 0 (+ y 1))
+          (do
+            (if (> p (rand))
+              (mikera.image.core/set-pixel ret-image x y (mikera.image.colours/rgb-from-components 0 0 0)) ;Below threshold. Drop pixel
+              (mikera.image.core/set-pixel ret-image x y (mikera.image.core/get-pixel image x y)) ;Else keep pixel
+              )
+            (recur (+ x 1) y)
+            )
+          )
+        )
+      )
+    )
+  )
+)
+;; @@
+
+;; @@
+(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 1 (fn [im] (mikera.image.core/save (d (grayscaled im) 0.2) "/home/gary/dropout.png" :quality 1.0 :progressive false)))
+;; @@
+
+;; @@
+;(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 1 (fn [im] (println (im2vec (d (grayscaled im) 0.2) 32))))
 ;; @@
 
 ;; @@
