@@ -131,10 +131,7 @@
                           (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) (list index vect)))) 
                           (range 0 num_cluster)))
         kernel-collection (map (fn [x] (kernel-compute x vect)) kernel_vec)]
-    (reduce add (zero-array shape) 
-            (map (fn [vec p] 
-                   (map (fn [x] (mul p x)) vec)
-                   ) kernel-collection prob_cluster))
+    (reduce add 0 (map mul kernel-collection prob_cluster))
   )
  )
 )
@@ -196,19 +193,16 @@
                         (map 
                           (fn [index] (exp (observe* (factor-gmm n pi mu_vec factor_vec) [index vect]))) 
                           (range 0 num_cluster)))
-         index (sample (discrete prob_cluster))
+        ;index (sample (discrete prob_cluster))
         kernel-collection (map 
                             (fn [x] 
                               (if (= (nth ischild_vec x) 1) 
                                 (moe-feed-weight-hierarchical n (nth child_vec x) vect) 
-                                (kernel-compute x vect))) child_vec)]
-    (reduce add (zero-array shape) 
-            (map (fn [vec p] 
-                   (map (fn [x] (mul p x)) vec)
-                   ) kernel-collection prob_cluster))
+                                (kernel-compute (nth child_vec x) vect))) (range (count ischild_vec)))]
+    (reduce add 0 kernel-collection prob_cluster);(moe-feed-weight-hierarchical n (nth child_vec index) vect)
   )
  )
- )
+)
 ;; @@
 
 ;; @@
@@ -337,7 +331,7 @@
           feeder (case (:feeder hyperparams)
                    "best" (if (:is-single hyperparams) moe-feed-best-single moe-feed-best-hierarchical)
                    "prob" (if (:is-single hyperparams) moe-feed-prob-single moe-feed-prob-hierarchical)
-                   "weight" (if (:is-single hyperparams)  moe-feed-weight-single moe-feed-weight-hierarchical)
+                   "weight" (if (:is-single hyperparams) moe-feed-weight-single moe-feed-weight-hierarchical)
                    (println "Wrong feed")
                    )
           ]
