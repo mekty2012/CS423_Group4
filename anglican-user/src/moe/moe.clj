@@ -199,7 +199,7 @@
                               (if (= (nth ischild_vec x) 1) 
                                 (moe-feed-weight-hierarchical n (nth child_vec x) vect) 
                                 (kernel-compute (nth child_vec x) vect))) (range (count ischild_vec)))]
-    (reduce add 0 kernel-collection prob_cluster);(moe-feed-weight-hierarchical n (nth child_vec index) vect)
+    (reduce add 0 (map mul kernel-collection prob_cluster));(moe-feed-weight-hierarchical n (nth child_vec index) vect)
   )
  )
 )
