@@ -248,6 +248,14 @@
 ;; @@
 
 ;; @@
+(def sample (doquery :lmh train  ["data/cifar-10-batches-bin/data_batch_1.bin" 5 0.2 2 single-hyperparameter]))
+
+(def result (take 10 (drop 50 sample)))
+
+(save-result "data/result_non_single_best.txt" result)
+;; @@
+
+;; @@
 ;single-best
 (save-string file-name "Times for single-best. Start time is:")
 (save-string file-name (now))
