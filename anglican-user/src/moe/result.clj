@@ -164,7 +164,8 @@
         feeder (case (:feeder hyperparams)
                    "best" (if (:is-single hyperparams) moe-feed-best-single-n moe-feed-best-hierarchical-n)
                    "prob" (if (:is-single hyperparams) moe-feed-prob-single-n moe-feed-prob-hierarchical-n)
-                   (if (:is-single hyperparams) moe-feed-weight-single-n moe-feed-weight-hierarchical-n)
+                   "weight" (if (:is-single hyperparams) moe-feed-weight-single-n moe-feed-weight-hierarchical-n)
+                 	(println "Wrong feed")
                    )]
     (loop [x 0 y 0]
       (if (= y 32)
@@ -269,13 +270,57 @@
 ;; @@
 (def inverse-model (inverse-factor-vec result-model))
 
-(def result-test (restore dropped inverse-model 2 {:feeder "prob", :is-single false}))
+(def result-test )
 ;; @@
 
 ;; @@
-(peak-signal-to-noise-ratio original result-test)
+(defn get-restore-result [image]
+  (let [dropped (dropoutted-normal image 0.2)]
+  (print "Original peak is: ")
+  (println (peak-signal-to-noise-ratio image dropped))
+  (print "New peak is: ")
+  (println (peak-signal-to-noise-ratio image (restore dropped inverse-model 2 {:feeder "prob", :is-single false})))
+    )
+  )
 ;; @@
 
 ;; @@
+(for-images-deer "data/cifar-10-batches-bin/data_batch_1.bin" 10 get-restore-result)
+;; @@
 
+;; @@
+(defn for-images-deer [file-name iter-num do-fun]
+  "Read file-name, to 32*32 images, and for each image, apply do-fun. It will perform do-fun for n images."
+  (let [f (java.io.File. file-name)
+		  st (byte-streams/to-byte-array f)]
+    (loop [chunk (partition 3073 st) n iter-num]
+      (let [ch (first chunk)
+            deerclassifier (first ch)
+            firstarray (next ch)
+            image (mikera.image.core/new-image 32 32)
+            pixels (mikera.image.core/get-pixels image)]
+        (if (not= deerclassifier 4) (recur (next chunk) n)
+          (do 
+            (loop [i 0 j 0]
+              (if (= j 32)
+                (do-fun image)
+                (if (= i 32)
+                  (recur 0 (+ j 1))
+                  (do
+                    (mikera.image.core/set-pixel image i j (mikera.image.colours/rgb-from-components
+                                                             (sb2ub (nth firstarray (+ i (* 32 j))))
+                                                             (sb2ub (nth firstarray (+ 1024 (+ i (* 32 j)))))
+                                                             (sb2ub (nth firstarray (+ 2048 (+ i (* 32 j)))))))
+                    (recur (+ i 1) j)
+                    )
+                  )
+                )
+              ) 
+              (when (> n 1) (recur (next chunk) (- n 1)))
+              )
+            )
+          )
+        )
+      )
+    )
 ;; @@

@@ -50,6 +50,13 @@
 
  (defn zero-array [shape]
    (clojure.core.matrix/zero-array shape))
+ 
+ (defn mul [a vec]
+   (clojure.core.matrix/mul a vec))
+;; @@
+
+;; @@
+(mul 0.5 [1 1 1])
 ;; @@
 
 ;; @@
@@ -83,8 +90,8 @@
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
         kernel_vec (:kernel_vec model)
-        prob_cluster ((map (fn [index] 
-                             (observe* (factor-gmm n pi mu_vec factor_vec) (list index vect))) (range 0 num_cluster)))
+        prob_cluster (map (fn [index] 
+                             (observe* (factor-gmm n pi mu_vec factor_vec) (list index vect))) (range 0 num_cluster))
         index (max-index prob_cluster)]
     (kernel-compute (nth kernel_vec index) vect)
     )
@@ -110,14 +117,14 @@
  )
 )
 
-(with-primitive-procedures [factor-gmm kernel-compute normalize shape add zero-array]
+(with-primitive-procedures [factor-gmm kernel-compute normalize shape add zero-array mul]
 (defm moe-feed-weight-single [n model vect]
   "Performs moe-feed, where gating model performs weighted sum over all children."
   (let [num_cluster (:num_cluster model)
         pi (:pi model)
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
-        shape (shape (first factor_vec))
+        shape (shape (first mu_vec))
         kernel_vec (:kernel_vec model)
         prob_cluster (normalize 
                         (map 
@@ -126,7 +133,7 @@
         kernel-collection (map (fn [x] (kernel-compute x vect)) kernel_vec)]
     (reduce add (zero-array shape) 
             (map (fn [vec p] 
-                   (map (fn [x] (* p x)) vec)
+                   (map (fn [x] (mul p x)) vec)
                    ) kernel-collection prob_cluster))
   )
  )
@@ -175,14 +182,14 @@
  )
 )
 
-(with-primitive-procedures [factor-gmm kernel-compute normalize shape add zero-array]
+(with-primitive-procedures [factor-gmm kernel-compute normalize shape add zero-array mul]
 (defm moe-feed-weight-hierarchical [n model vect]
   "Performs moe-feed, where gating model performs weighted sum over all children."
   (let [num_cluster (:num_cluster model)
         pi (:pi model)
         mu_vec (:mu_vec model)
         factor_vec (:factor_vec model)
-        shape (shape (first factor_vec))
+        shape (shape (first mu_vec))
         ischild_vec (:ischild_vec model)
         child_vec (:child_vec model)
         prob_cluster (normalize 
@@ -197,7 +204,7 @@
                                 (kernel-compute x vect))) child_vec)]
     (reduce add (zero-array shape) 
             (map (fn [vec p] 
-                   (map (fn [x] (* p x)) vec)
+                   (map (fn [x] (mul p x)) vec)
                    ) kernel-collection prob_cluster))
   )
  )
@@ -330,7 +337,8 @@
           feeder (case (:feeder hyperparams)
                    "best" (if (:is-single hyperparams) moe-feed-best-single moe-feed-best-hierarchical)
                    "prob" (if (:is-single hyperparams) moe-feed-prob-single moe-feed-prob-hierarchical)
-                   (if (:is-single hyperparams) moe-feed-weight-single moe-feed-weight-hierarchical)
+                   "weight" (if (:is-single hyperparams)  moe-feed-weight-single moe-feed-weight-hierarchical)
+                   (println "Wrong feed")
                    )
           ]
       (for-images-m file-name iter-num
