@@ -367,5 +367,56 @@
 ;; @@
 
 ;; @@
-
+(with-primitive-procedures [nbox im2vec pixel2gray rgb2uniform get-pixel shape now]
+  (defquery train-fast [file-name iter-num drop-prob box-size hyperparams]
+    (let [model (if (:is-single hyperparams)
+                  (if (:auto-tune hyperparams)
+                    (autotuned-single-moe-sampler hyperparams)
+                    (single-moe-sampler hyperparams)
+                    )
+                  (if (:auto-tune hyperparams)
+                    (autotuned-hierarchical-moe-sampler hyperparams)
+                    (hierarchical-moe-sampler hyperparams)
+                    )
+                  )
+          feeder (case (:feeder hyperparams)
+                   "best" (if (:is-single hyperparams) moe-feed-best-single moe-feed-best-hierarchical)
+                   "prob" (if (:is-single hyperparams) moe-feed-prob-single moe-feed-prob-hierarchical)
+                   "weight" (if (:is-single hyperparams) moe-feed-weight-single moe-feed-weight-hierarchical)
+                   (println "Wrong feed")
+                   )
+          ]
+      (for-images-m file-name iter-num
+        (fn [im]
+          (let [dropped (dropoutted im drop-prob)]
+            (loop [x box-size y box-size]
+              (if (= y (- 32 box-size))
+                nil
+                (if (= x (- 32 box-size))
+                  (recur box-size (inc y))
+                  (do
+                    (let [box (nbox im box-size x y)
+                          box-vector (im2vec box (+ 1 (* 2 box-size)))
+                          gray-vector (map pixel2gray box-vector)
+                          uniform-vector (map rgb2uniform gray-vector)]
+                      (when (= (nth uniform-vector (inc box-size)) -1)
+                        (let [ret (feeder (+ 1 (* 2 box-size)) model uniform-vector)]
+                          (observe (normal (rgb2uniform (get-pixel im x y)) 1) ret)
+                          )
+                        )
+                      )
+                    (recur (inc x) y)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      (print "Query made. Current time is: ")
+      (println (now))
+      model
+      )
+    )
+  )
 ;; @@

@@ -26,6 +26,9 @@
 (ns+ template
   (:like anglican-user.worksheet))
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[nil,nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[nil,nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[nil,nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[nil,nil],nil],nil],nil]"},{"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}],"value":"[[[[[nil,nil],nil],nil],nil],nil]"}
+;; <=
 
 ;; @@
 (def single-hyperparameter 
@@ -206,6 +209,9 @@
    }
   )
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/single-hyperparameter</span>","value":"#'template/single-hyperparameter"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/single-hyperparameter-1</span>","value":"#'template/single-hyperparameter-1"}],"value":"[#'template/single-hyperparameter,#'template/single-hyperparameter-1]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/single-hyperparameter-2</span>","value":"#'template/single-hyperparameter-2"}],"value":"[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/hierarchical-hyperparameter</span>","value":"#'template/hierarchical-hyperparameter"}],"value":"[[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2],#'template/hierarchical-hyperparameter]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/hierarchical-hyperparameter-1</span>","value":"#'template/hierarchical-hyperparameter-1"}],"value":"[[[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2],#'template/hierarchical-hyperparameter],#'template/hierarchical-hyperparameter-1]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/hierarchical-hyperparameter-2</span>","value":"#'template/hierarchical-hyperparameter-2"}],"value":"[[[[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2],#'template/hierarchical-hyperparameter],#'template/hierarchical-hyperparameter-1],#'template/hierarchical-hyperparameter-2]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/autotune-single-hyperparameter</span>","value":"#'template/autotune-single-hyperparameter"}],"value":"[[[[[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2],#'template/hierarchical-hyperparameter],#'template/hierarchical-hyperparameter-1],#'template/hierarchical-hyperparameter-2],#'template/autotune-single-hyperparameter]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/autotune-single-hyperparameter-1</span>","value":"#'template/autotune-single-hyperparameter-1"}],"value":"[[[[[[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2],#'template/hierarchical-hyperparameter],#'template/hierarchical-hyperparameter-1],#'template/hierarchical-hyperparameter-2],#'template/autotune-single-hyperparameter],#'template/autotune-single-hyperparameter-1]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/autotune-single-hyperparameter-2</span>","value":"#'template/autotune-single-hyperparameter-2"}],"value":"[[[[[[[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2],#'template/hierarchical-hyperparameter],#'template/hierarchical-hyperparameter-1],#'template/hierarchical-hyperparameter-2],#'template/autotune-single-hyperparameter],#'template/autotune-single-hyperparameter-1],#'template/autotune-single-hyperparameter-2]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/autotune-hierarchical-hyperparameter</span>","value":"#'template/autotune-hierarchical-hyperparameter"}],"value":"[[[[[[[[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2],#'template/hierarchical-hyperparameter],#'template/hierarchical-hyperparameter-1],#'template/hierarchical-hyperparameter-2],#'template/autotune-single-hyperparameter],#'template/autotune-single-hyperparameter-1],#'template/autotune-single-hyperparameter-2],#'template/autotune-hierarchical-hyperparameter]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/autotune-hierarchical-hyperparameter-1</span>","value":"#'template/autotune-hierarchical-hyperparameter-1"}],"value":"[[[[[[[[[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2],#'template/hierarchical-hyperparameter],#'template/hierarchical-hyperparameter-1],#'template/hierarchical-hyperparameter-2],#'template/autotune-single-hyperparameter],#'template/autotune-single-hyperparameter-1],#'template/autotune-single-hyperparameter-2],#'template/autotune-hierarchical-hyperparameter],#'template/autotune-hierarchical-hyperparameter-1]"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/autotune-hierarchical-hyperparameter-2</span>","value":"#'template/autotune-hierarchical-hyperparameter-2"}],"value":"[[[[[[[[[[[#'template/single-hyperparameter,#'template/single-hyperparameter-1],#'template/single-hyperparameter-2],#'template/hierarchical-hyperparameter],#'template/hierarchical-hyperparameter-1],#'template/hierarchical-hyperparameter-2],#'template/autotune-single-hyperparameter],#'template/autotune-single-hyperparameter-1],#'template/autotune-single-hyperparameter-2],#'template/autotune-hierarchical-hyperparameter],#'template/autotune-hierarchical-hyperparameter-1],#'template/autotune-hierarchical-hyperparameter-2]"}
+;; <=
 
 ;; @@
 (defn save-result [file-name result]
@@ -225,6 +231,9 @@
     )
   )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/save-result</span>","value":"#'template/save-result"}
+;; <=
 
 ;; @@
 (defn save-string [file-name string]
@@ -236,6 +245,9 @@
     )
   )
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/save-string</span>","value":"#'template/save-string"}
+;; <=
 
 ;; **
 ;;; Testing for time spent. Box method. WARNING: takes long time.
@@ -246,14 +258,20 @@
 
 (def file-temp "temp.txt")
 ;; @@
+;; =>
+;;; {"type":"list-like","open":"","close":"","separator":"</pre><pre>","items":[{"type":"html","content":"<span class='clj-var'>#&#x27;template/file-name</span>","value":"#'template/file-name"},{"type":"html","content":"<span class='clj-var'>#&#x27;template/file-temp</span>","value":"#'template/file-temp"}],"value":"[#'template/file-name,#'template/file-temp]"}
+;; <=
 
 ;; @@
-(def sample (doquery :lmh train  ["data/cifar-10-batches-bin/data_batch_1.bin" 5 0.2 2 single-hyperparameter]))
+(def sample (doquery :lmh train-fast  ["data/cifar-10-batches-bin/data_batch_1.bin" 5 0.2 2 autotune-single-hyperparameter-2]))
 
 (def result (take 10 (drop 50 sample)))
 
 (save-result "data/result_non_single_best.txt" result)
 ;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;template/result</span>","value":"#'template/result"}
+;; <=
 
 ;; @@
 ;single-best
