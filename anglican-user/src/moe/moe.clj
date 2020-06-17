@@ -56,10 +56,6 @@
 ;; @@
 
 ;; @@
-(mul 0.5 [1 1 1])
-;; @@
-
-;; @@
 (defn max-index [v] 
   (let [length (count v)]
     (loop [maximum (nth v 0)

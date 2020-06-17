@@ -330,7 +330,3 @@
     [(/ old n) (/ new n)]
     (recur (+ 1 n) (+ old (nth signals (* 2 n))) (+ new (nth signals (+ (* 2 n ) 1))))))
 ;; @@
-
-;; @@
-
-;; @@
