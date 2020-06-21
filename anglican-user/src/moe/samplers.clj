@@ -20,7 +20,7 @@
 
 ;; @@
 (defm cluster-num-sampler [lambda]
-	(+ 1 (sample (poisson (int lambda))))
+	(+ 1 (sample (poisson (+ lambda 0.00001))))
   )
 ;; @@
 
