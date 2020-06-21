@@ -74,7 +74,7 @@
 
 (defn kernel-compute [kernel vect]
   "Returns value applying kernel to vect. In fact, it is dot product."
-  (clojure.core.matrix/mmul kernel vect)
+  (clojure.core.matrix/mmul kernel (conj vect 1))
   )
 
 ;The below 3 methods needs testing

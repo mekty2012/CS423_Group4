@@ -79,7 +79,7 @@
 
 (with-primitive-procedures [xavier]
 (defm kernel-sampler [n]
-  (repeatedly n (fn [] (sample (uniform-continuous (- (xavier n)) (xavier n)))))
+  (conj (repeatedly n (fn [] (sample (uniform-continuous (- (xavier n)) (xavier n))))) (sample (normal 0 n)))
   )
   )
 ;; @@
