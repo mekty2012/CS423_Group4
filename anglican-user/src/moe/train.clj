@@ -244,16 +244,42 @@
 ;; @@
 
 ;; @@
-(println "Algorithm: smc")
+(println "Algorithm: lmh")
 (println "iter num: 100")
 (println "Box size: 2")
 (println "Feed type: 'auto-single-best'")
 
-(def sample (doquery :smc train-fast  ["data/cifar-10-batches-bin/data_batch_1.bin" 100 0.2 2 autotune-single-hyperparameter-2] :number-of-particles 100))
+(def sample (doquery :lmh train-fast  ["data/cifar-10-batches-bin/data_batch_1.bin" 100 0.2 2 autotune-single-hyperparameter-2] ))
 
-(def result (map last (take 10 (partition 100 sample))))
+(def result (take 10  sample))
                  
-(save-result "data/models/result_auto_single_weight_smc.txt" result)
+(save-result "data/models/plmh-lmh-test.txt" result)
+;; @@
+
+;; @@
+(println "Algorithm: plmh")
+(println "iter num: 100")
+(println "Box size: 2")
+(println "Feed type: 'auto-single-best'")
+
+(def sample-a (doquery :almh train-fast  ["data/cifar-10-batches-bin/data_batch_1.bin" 100 0.2 2 autotune-single-hyperparameter]))
+
+(def result-a  (map last (take 3 (partition 100 sample-a))))
+                 
+(save-result "data/best-almh.txt" result-a)
+;; @@
+
+;; @@
+g(println "Algorithm: plmh")
+(println "iter num: 100")
+(println "Box size: 2")
+(println "Feed type: 'auto-single-best'")
+
+(def sample-b (doquery :bamc train-fast  ["data/cifar-10-batches-bin/data_batch_1.bin" 100 0.2 2 autotune-single-hyperparameter-2] :predicate-candidates false))
+
+(def result-b  (take 10 sample-b))
+                 
+(save-result "data/plmh-lmh-test.txt" result-b)
 ;; @@
 
 ;; @@
