@@ -20,3 +20,4 @@ anglican-user/.gorilla-port
 *.extract-native-dependencies
 *.DS_Store
 anglican-user/*.txt
+*.png
