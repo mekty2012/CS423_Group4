@@ -249,11 +249,11 @@
 (println "Box size: 2")
 (println "Feed type: 'auto-single-best'")
 
-(def sample (doquery :smc train-fast  ["data/cifar-10-batches-bin/data_batch_1.bin" 100 0.2 2 autotune-single-hyperparameter-2] :number-of-particles 100))
+(def sample (doquery :pimh train-fast  ["data/cifar-10-batches-bin/data_batch_1.bin" 100 0.2 2 autotune-single-hyperparameter] :number-of-particles 100))
 
-(def result (map last (take 10 (partition 100 sample))))
+(def result (map last (take 3 (partition 100 sample))))
                  
-(save-result "data/models/result_auto_single_weight_smc.txt" result)
+(save-result "data/models/result_auto_single_best_pimh.txt" result)
 ;; @@
 
 ;; @@
